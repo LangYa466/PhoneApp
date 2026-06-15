@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#2B2930"
+    android:orientation="vertical"
+    android:paddingHorizontal="12dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="16dp">
+
+    <!-- 头：关闭 + 输入显示 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCloseDialpad"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            app:icon="@drawable/ic_close"
+            app:iconTint="#E6E1E5" />
+
+        <TextView
+            android:id="@+id/tvDtmf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="#E6E1E5"
+            android:textSize="28sp" />
+    </FrameLayout>
+
+    <!-- 12 键 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout style="@style/InCallDialpadRow">
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmf1" />
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmf2" />
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmf3" />
+        </LinearLayout>
+        <LinearLayout style="@style/InCallDialpadRow">
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmf4" />
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmf5" />
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmf6" />
+        </LinearLayout>
+        <LinearLayout style="@style/InCallDialpadRow">
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmf7" />
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmf8" />
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmf9" />
+        </LinearLayout>
+        <LinearLayout style="@style/InCallDialpadRow">
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmfStar" />
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmf0" />
+            <include layout="@layout/in_call_dial_key" android:id="@+id/dtmfHash" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

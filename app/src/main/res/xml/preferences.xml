@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="外观">
+        <ListPreference
+            app:key="theme_mode"
+            app:title="@string/pref_theme_mode"
+            app:entries="@array/theme_mode_entries"
+            app:entryValues="@array/theme_mode_values"
+            app:defaultValue="system"
+            app:useSimpleSummaryProvider="true"
+            app:icon="@android:drawable/ic_menu_day" />
+
+        <ListPreference
+            app:key="theme_color"
+            app:title="@string/pref_theme_color"
+            app:entries="@array/theme_color_entries"
+            app:entryValues="@array/theme_color_values"
+            app:defaultValue="dynamic"
+            app:useSimpleSummaryProvider="true"
+            app:icon="@android:drawable/ic_menu_edit" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="电话">
+        <Preference
+            app:key="default_dialer"
+            app:title="@string/pref_default_dialer"
+            app:icon="@android:drawable/ic_menu_call" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="缓存">
+        <Preference
+            app:key="clear_empty"
+            app:title="@string/pref_clear_empty"
+            app:summary="@string/pref_clear_empty_summary"
+            app:icon="@android:drawable/ic_menu_revert" />
+
+        <Preference
+            app:key="clear_cache"
+            app:title="@string/pref_clear_cache"
+            app:icon="@android:drawable/ic_menu_delete" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="诊断">
+        <Preference
+            app:key="crash_log"
+            app:title="@string/pref_crash_log"
+            app:icon="@android:drawable/stat_notify_error" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="关于">
+        <Preference
+            app:key="about"
+            app:title="@string/pref_about"
+            app:summary="完整默认电话应用 v1.0"
+            app:icon="@android:drawable/ic_menu_info_details" />
+    </PreferenceCategory>
+</PreferenceScreen>

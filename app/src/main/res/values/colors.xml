@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MD3 风格的深饱和蓝（接近 M3 primary tone 40） -->
+    <color name="ic_launcher_background">#0B57D0</color>
+</resources>

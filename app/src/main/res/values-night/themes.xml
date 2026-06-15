@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.CallerID" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" >false</item>
+    </style>
+
+    <style name="ThemeOverlay.CallerID.Blue" parent="">
+        <item name="colorPrimary">#A8C7FA</item>
+        <item name="colorOnPrimary">#003258</item>
+        <item name="colorPrimaryContainer">#00497D</item>
+        <item name="colorOnPrimaryContainer">#D3E3FD</item>
+        <item name="colorSecondary">#BBC7DB</item>
+        <item name="colorSecondaryContainer">#3B4858</item>
+    </style>
+
+    <style name="ThemeOverlay.CallerID.Green" parent="">
+        <item name="colorPrimary">#9DD49E</item>
+        <item name="colorOnPrimary">#003910</item>
+        <item name="colorPrimaryContainer">#1B5E20</item>
+        <item name="colorOnPrimaryContainer">#B8F0BC</item>
+        <item name="colorSecondary">#BACBB3</item>
+        <item name="colorSecondaryContainer">#3A4B39</item>
+    </style>
+
+    <style name="ThemeOverlay.CallerID.Purple" parent="">
+        <item name="colorPrimary">#D0BCFF</item>
+        <item name="colorOnPrimary">#381E72</item>
+        <item name="colorPrimaryContainer">#4F378B</item>
+        <item name="colorOnPrimaryContainer">#EADDFF</item>
+        <item name="colorSecondary">#CCC2DC</item>
+        <item name="colorSecondaryContainer">#4A4458</item>
+    </style>
+
+    <style name="ThemeOverlay.CallerID.Red" parent="">
+        <item name="colorPrimary">#FFB4AB</item>
+        <item name="colorOnPrimary">#690005</item>
+        <item name="colorPrimaryContainer">#93000A</item>
+        <item name="colorOnPrimaryContainer">#FFDAD6</item>
+        <item name="colorSecondary">#E7BDB7</item>
+        <item name="colorSecondaryContainer">#5D3F3B</item>
+    </style>
+
+    <style name="ThemeOverlay.CallerID.Orange" parent="">
+        <item name="colorPrimary">#FFB683</item>
+        <item name="colorOnPrimary">#4A2800</item>
+        <item name="colorPrimaryContainer">#693C00</item>
+        <item name="colorOnPrimaryContainer">#FFDCC2</item>
+        <item name="colorSecondary">#E5BEAE</item>
+        <item name="colorSecondaryContainer">#5C4033</item>
+    </style>
+
+    <style name="ThemeOverlay.CallerID.Teal" parent="">
+        <item name="colorPrimary">#82D3DE</item>
+        <item name="colorOnPrimary">#00363D</item>
+        <item name="colorPrimaryContainer">#004F58</item>
+        <item name="colorOnPrimaryContainer">#A4EEFB</item>
+        <item name="colorSecondary">#B0CBD0</item>
+        <item name="colorSecondaryContainer">#324B4F</item>
+    </style>
+</resources>
