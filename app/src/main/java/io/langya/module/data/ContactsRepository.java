@@ -35,7 +35,7 @@ public final class ContactsRepository {
         if (number == null || number.isEmpty()) return null;
         if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
-            Timber.w("READ_CONTACTS not granted, skip: " + number);
+            Timber.w("READ_CONTACTS not granted, skip: %s", number);
             return null;
         }
 
@@ -50,19 +50,19 @@ public final class ContactsRepository {
 
         name = idx.get(normalized);
         if (name != null) {
-            Timber.d("fallback hit (full): " + number + " -> " + name);
+            Timber.d("fallback hit (full): %s -> %s", number, name);
             return name;
         }
         if (normalized.length() > CHINA_MOBILE_LEN) {
             var tail = normalized.substring(normalized.length() - CHINA_MOBILE_LEN);
             name = idx.get(tail);
             if (name != null) {
-                Timber.d("fallback hit (last-11): " + number + " -> " + name);
+                Timber.d("fallback hit (last-11): %s -> %s", number, name);
                 return name;
             }
         }
 
-        Timber.d("no match for: " + number + " (index size=" + idx.size() + ")");
+        Timber.d("no match for: %s (index size=%d)", number, idx.size());
         return null;
     }
 
@@ -80,7 +80,7 @@ public final class ContactsRepository {
                 null, null, null)) {
             if (c != null && c.moveToFirst()) {
                 var name = c.getString(0);
-                Timber.d("PhoneLookup hit: " + number + " -> " + name);
+                Timber.d("PhoneLookup hit: %s -> %s", number, name);
                 return name;
             }
         } catch (Throwable t) {
@@ -130,7 +130,7 @@ public final class ContactsRepository {
         } catch (Throwable t) {
             Timber.w(t, "buildIndex failed");
         }
-        Timber.d("Phone index built, keys=" + map.size());
+        Timber.d("Phone index built, keys=%d", map.size());
         return map;
     }
 

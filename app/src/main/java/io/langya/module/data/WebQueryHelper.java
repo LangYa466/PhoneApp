@@ -53,7 +53,7 @@ public final class WebQueryHelper {
      * 串行去重在更上层（{@link CallerIdBatchResolver}）做。
      */
     public void query(Context ctx, String number, Callback cb) {
-        Timber.d("query: " + number);
+        Timber.d("query: %s", number);
         if (number == null || number.isEmpty()) {
             MAIN.post(() -> cb.onResult(null));
             return;
@@ -62,7 +62,7 @@ public final class WebQueryHelper {
         // —— 同步快路径 ——
         var quick = quickHit(number);
         if (quick != null) {
-            Timber.d("FAST hit: " + number + " -> " + quick.value);
+            Timber.d("FAST hit: %s -> %s", number, quick.value);
             final String value = quick.value;
             MAIN.post(() -> cb.onResult(value.isEmpty() ? null : value));
             return;
@@ -72,8 +72,7 @@ public final class WebQueryHelper {
         CacheStore.init(ctx);
         var cached = CacheStore.get(number);
         if (cached != null) {
-            Timber.d("CACHE hit: " + number + " -> "
-                    + (cached.isEmpty() ? "(negative)" : cached));
+            Timber.d("CACHE hit: %s -> %s", number, cached.isEmpty() ? "(negative)" : cached);
             final String value = cached;
             MAIN.post(() -> cb.onResult(value.isEmpty() ? null : value));
             return;
@@ -90,7 +89,7 @@ public final class WebQueryHelper {
             final String value = result;
             // 负缓存：未识别同样写入 ""，避免反复发起请求
             CacheStore.put(number, value == null ? "" : value);
-            Timber.d("REMOTE result " + number + " -> " + value);
+            Timber.d("REMOTE result %s -> %s", number, value);
             MAIN.post(() -> cb.onResult(value));
         });
     }

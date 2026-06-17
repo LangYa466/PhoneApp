@@ -47,7 +47,7 @@ public final class CallManager {
         calls.add(call);
         // 指定主线程 Handler，避免 Call 回调跑在 binder 线程上 (#15)
         call.registerCallback(callCallback, mainHandler);
-        Timber.d("addCall " + call + " state=" + call.getDetails().getState());
+        Timber.d("addCall %s state=%d", call, call.getDetails().getState());
         for (var l : new ArrayList<>(listeners)) l.onCallAdded(call);
     }
 

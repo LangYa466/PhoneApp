@@ -19,7 +19,7 @@ public class PhoneCallService extends InCallService {
     @Override
     public void onCallAdded(Call call) {
         super.onCallAdded(call);
-        Timber.d("onCallAdded " + call);
+        Timber.d("onCallAdded %s", call);
         CallManager.get().attach(this);
         CallManager.get().addCall(call);
 
@@ -31,7 +31,7 @@ public class PhoneCallService extends InCallService {
     @Override
     public void onCallRemoved(Call call) {
         super.onCallRemoved(call);
-        Timber.d("onCallRemoved " + call);
+        Timber.d("onCallRemoved %s", call);
         CallManager.get().removeCall(call);
         if (CallManager.get().getCalls().isEmpty()) {
             CallManager.get().detach();

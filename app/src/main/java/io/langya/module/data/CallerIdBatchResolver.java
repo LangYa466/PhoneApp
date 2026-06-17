@@ -80,7 +80,7 @@ public final class CallerIdBatchResolver {
         }
 
         // 真正发起网络/内置 DB 查询（WebQueryHelper 内部对 BUILTIN/SPECIAL 命中走快路径）
-        Timber.d("WebQuery: " + j.number);
+        Timber.d("WebQuery: %s", j.number);
         new WebQueryHelper().query(j.ctx, j.number, result -> {
             j.listener.onResolved(j.number, result);
             main.post(CallerIdBatchResolver::runNext);

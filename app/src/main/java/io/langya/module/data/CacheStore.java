@@ -33,13 +33,13 @@ public final class CacheStore {
     public static synchronized String get(String number) {
         var hit = MEM.get(number);
         if (hit != null) {
-            Timber.d("MEM hit: " + number + " -> " + hit);
+            Timber.d("MEM hit: %s -> %s", number, hit);
             return hit;
         }
         if (sp == null || !sp.contains(KEY_PREFIX + number)) return null;
         var v = sp.getString(KEY_PREFIX + number, null);
         if (v != null) MEM.put(number, v);
-        Timber.d("DISK hit: " + number + " -> " + v);
+        Timber.d("DISK hit: %s -> %s", number, v);
         return v;
     }
 
@@ -48,7 +48,7 @@ public final class CacheStore {
         MEM.put(number, result);
         if (sp != null) {
             sp.edit().putString(KEY_PREFIX + number, result).apply();
-            Timber.d("CACHE put: " + number + " -> " + result);
+            Timber.d("CACHE put: %s -> %s", number, result);
         }
     }
 
@@ -64,13 +64,13 @@ public final class CacheStore {
             }
         }
         editor.apply();
-        Timber.d("clearEmpty: removed " + count + " entries");
+        Timber.d("clearEmpty: removed %d entries", count);
     }
 
     public static synchronized void remove(String number) {
         MEM.remove(number);
         if (sp != null) sp.edit().remove(KEY_PREFIX + number).apply();
-        Timber.d("removed: " + number);
+        Timber.d("removed: %s", number);
     }
 
     public static synchronized void clearAll() {
