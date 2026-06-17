@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telecom.TelecomManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +35,10 @@ import io.langya.module.ui.Md3Icons;
 public class DialerFragment extends Fragment {
 
     private FragmentDialerBinding b;
+    /** 原始输入 (digits / + / * / #); EditText 显示的是 formatForDisplay 后的字符串 */
     private final StringBuilder buffer = new StringBuilder();
     private String lastLookupNumber = "";
+    private boolean updatingDisplay = false;
     private final AsYouTypeFormatter formatter =
             PhoneNumberUtil.getInstance().getAsYouTypeFormatter("CN");
 
@@ -91,7 +95,32 @@ public class DialerFragment extends Fragment {
         b.suggestAdd.setOnClickListener(v -> launchAddToContact());
         b.suggestMessage.setOnClickListener(v -> launchSendMessage());
 
+        // 支持粘贴/手动编辑 EditText 自身有焦点但软键盘禁用 用本地拨号盘输入
+        b.tvDisplay.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                if (updatingDisplay) return;
+                var sanitized = sanitize(s.toString());
+                buffer.setLength(0);
+                buffer.append(sanitized);
+                updateDisplay();
+            }
+        });
+        b.tvDisplay.setShowSoftInputOnFocus(false);
+        b.tvDisplay.requestFocus();
+
         updateDisplay();
+    }
+
+    /** 粘贴进来的号码里 - / 空格 / 括号都要剥掉 只留 digits + + * # */
+    private static String sanitize(String raw) {
+        var sb = new StringBuilder(raw.length());
+        for (int i = 0; i < raw.length(); i++) {
+            char c = raw.charAt(i);
+            if (Character.isDigit(c) || c == '+' || c == '*' || c == '#') sb.append(c);
+        }
+        return sb.toString();
     }
 
     @Override
@@ -126,7 +155,16 @@ public class DialerFragment extends Fragment {
 
     private void updateDisplay() {
         var raw = buffer.toString();
-        b.tvDisplay.setText(formatForDisplay(raw));
+        var formatted = formatForDisplay(raw);
+        if (!formatted.contentEquals(b.tvDisplay.getText())) {
+            updatingDisplay = true;
+            try {
+                b.tvDisplay.setText(formatted);
+                b.tvDisplay.setSelection(formatted.length());
+            } finally {
+                updatingDisplay = false;
+            }
+        }
         b.tvCallerId.setText("");
         b.suggestions.setVisibility(raw.isEmpty() ? View.GONE : View.VISIBLE);
 

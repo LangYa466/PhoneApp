@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -21,15 +22,25 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
+            <EditText
                 android:id="@+id/tvDisplay"
                 style="@style/TextAppearance.Material3.HeadlineMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@null"
+                android:cursorVisible="true"
                 android:ellipsize="start"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:hint="@string/dialer_hint"
+                android:inputType="phone"
+                android:longClickable="true"
                 android:maxLines="1"
-                android:textColor="?attr/colorOnSurface" />
+                android:padding="0dp"
+                android:textColor="?attr/colorOnSurface"
+                android:textIsSelectable="true"
+                android:textCursorDrawable="@null"
+                tools:ignore="LabelFor" />
 
             <TextView
                 android:id="@+id/tvCallerId"
