@@ -14,9 +14,6 @@
     <string name="prompt_contacts_desc">家人和朋友来电时显示备注名，否则只能识别公司商户号码</string>
     <string name="prompt_contacts_action">授权</string>
     <string name="toast_open_settings_for_contacts">系统已永久拒绝，请前往应用权限页授权</string>
-    <string name="prompt_overlay_title">显示在其他应用上层</string>
-    <string name="prompt_overlay_desc">号码识别需要在后台挂一个隐形 WebView，未授权时所有非内置号码识别都会失败</string>
-    <string name="prompt_overlay_action">去授权</string>
     <string name="toast_contacts_loaded">已读取 %1$d 个联系人</string>
     <string name="toast_already_default">已经是默认电话应用</string>
     <string name="toast_default_unsupported">当前系统不支持设置默认拨号应用</string>

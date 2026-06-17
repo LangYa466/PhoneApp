@@ -7,7 +7,7 @@ import android.os.Looper;
 /**
  * 来电号码识别统一入口。优先级：
  *   1. 系统通讯录备注名（同步、即刻）
- *   2. WebQueryHelper 内置 DB / 缓存 / 百度页解析
+ *   2. WebQueryHelper：内置 DB / 缓存 / 离线号段 / 在线手机归属地
  *
  * 所有 UI 现在都用这个，不要再直接 new WebQueryHelper()。
  */

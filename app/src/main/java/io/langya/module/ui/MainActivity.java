@@ -52,10 +52,6 @@ public class MainActivity extends AppCompatActivity {
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
                     r -> updateContactsPrompt());
 
-    private final ActivityResultLauncher<Intent> overlayLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                    r -> updateOverlayPrompt());
-
     private final ActivityResultLauncher<String> contactsLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(),
                     granted -> {
@@ -111,9 +107,6 @@ public class MainActivity extends AppCompatActivity {
 
         b.btnBecomeDefault.setOnClickListener(v -> requestDefaultDialerRole());
         b.btnGrantContacts.setOnClickListener(v -> contactsLauncher.launch(Manifest.permission.READ_CONTACTS));
-        b.btnGrantOverlay.setOnClickListener(v -> overlayLauncher.launch(
-                new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.fromParts("package", getPackageName(), null))));
 
         handleIntent(getIntent());
         requestCorePermissions();
@@ -196,11 +189,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         updateDefaultDialerPrompt();
         updateContactsPrompt();
-        updateOverlayPrompt();
-    }
-
-    private void updateOverlayPrompt() {
-        b.cardOverlayPrompt.setVisibility(Settings.canDrawOverlays(this) ? View.GONE : View.VISIBLE);
     }
 
     private void updateContactsPrompt() {

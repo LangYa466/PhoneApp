@@ -58,46 +58,6 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardOverlayPrompt"
-        style="@style/Widget.Material3.CardView.Filled"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="12dp"
-        android:visibility="gone"
-        app:cardCornerRadius="18dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                style="@style/TextAppearance.Material3.TitleMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/prompt_overlay_title" />
-
-            <TextView
-                style="@style/TextAppearance.Material3.BodySmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="?android:textColorSecondary"
-                android:text="@string/prompt_overlay_desc" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnGrantOverlay"
-                style="@style/Widget.Material3.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/prompt_overlay_action" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardContactsPrompt"
         style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="match_parent"
