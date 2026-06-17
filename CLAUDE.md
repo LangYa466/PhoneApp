@@ -26,5 +26,27 @@ git commit -m "release: 1.6 新增 XXX"
 - 发版前必须先在 `app/build.gradle` 把 `versionName` (以及一般同时改
   `versionCode`) 更新到目标版本，否则 tag 会和上一次重复，
   `softprops/action-gh-release` 会失败。
-- 当前 release 构建未配置签名，产物是未签名 APK。需要签名时在
-  workflow 里加 `signingConfigs` + secrets。
+
+## 签名
+
+release 构建走环境变量驱动的 `signingConfigs.release`，本地构建不设
+`ANDROID_KEYSTORE_FILE` 时自动回退为不签名 (不会报错)。
+
+GitHub Actions 用 repo secrets 注入:
+- `ANDROID_KEYSTORE_BASE64` — keystore 文件 base64
+- `ANDROID_KEYSTORE_PASSWORD`
+- `ANDROID_KEY_ALIAS`
+- `ANDROID_KEY_PASSWORD`
+
+本地 keystore 在 `~/.android/phoneapp-release.jks` (10000 天有效,
+alias `phoneapp`)，**不进 git**。换机/丢失需要重新生成并更新所有
+secrets — 但 applicationId 一旦发布过, 换签名等于换 app, 用户必须
+卸载重装, 谨慎。本地想签名可以:
+
+```
+ANDROID_KEYSTORE_FILE=~/.android/phoneapp-release.jks \
+ANDROID_KEYSTORE_PASSWORD=... \
+ANDROID_KEY_ALIAS=phoneapp \
+ANDROID_KEY_PASSWORD=... \
+gradle :app:assembleRelease
+```

@@ -35,7 +35,16 @@ jobs:
           echo "versionName=$VERSION_NAME" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION_NAME" >> "$GITHUB_OUTPUT"
 
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/release.jks"
+          echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+
       - name: Build release APK
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: gradle :app:assembleRelease --no-daemon
 
       - name: Rename APK
