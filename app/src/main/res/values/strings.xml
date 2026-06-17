@@ -84,7 +84,7 @@
     <string name="about_libraries">Open-source libraries</string>
     <string name="about_apis">External APIs</string>
     <string name="about_thanks">Thanks to all open-source contributors. Material Symbols by Google Iconics maintained by @mikepenz</string>
-    <string name="about_api_taobao">tcc.taobao.com /cc/json/mobile_tel_segment.htm (mobile number location lookup)</string>
+    <string name="about_api_baidu">m.baidu.com/s (offscreen WebView innerText scrape for caller ID)</string>
     <string name="pref_theme_mode">Theme</string>
     <string name="pref_theme_color">Accent color</string>
     <string name="pref_default_dialer">Default phone app</string>

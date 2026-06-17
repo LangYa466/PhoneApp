@@ -84,7 +84,7 @@
     <string name="about_libraries">开源依赖</string>
     <string name="about_apis">外部 API</string>
     <string name="about_thanks">感谢所有开源作者 Material Symbols 由 Google 提供 Iconics 由 @mikepenz 维护</string>
-    <string name="about_api_taobao">tcc.taobao.com /cc/json/mobile_tel_segment.htm (手机号归属地查询)</string>
+    <string name="about_api_baidu">m.baidu.com/s (离屏 WebView 抓 innerText 做号码识别)</string>
     <string name="pref_theme_mode">深色模式</string>
     <string name="pref_theme_color">主题色</string>
     <string name="pref_default_dialer">默认电话应用</string>

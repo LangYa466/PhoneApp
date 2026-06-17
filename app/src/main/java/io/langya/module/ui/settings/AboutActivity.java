@@ -34,6 +34,6 @@ public class AboutActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.tvLibraries)).setText(libs.toString().trim());
 
         ((TextView) findViewById(R.id.tvApis))
-                .setText("· " + getString(R.string.about_api_taobao));
+                .setText("· " + getString(R.string.about_api_baidu));
     }
 }

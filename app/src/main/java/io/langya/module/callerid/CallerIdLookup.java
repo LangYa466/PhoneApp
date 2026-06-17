@@ -17,15 +17,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  *   1) BUILTIN_DB        （内置 3000+ 条 含报警/急救/客服等原 SPECIAL_NUMBERS）
  *   2) CallerIdCache        （磁盘缓存 包括"已查过但未识别"的负缓存）
  *   3) 离线手机号段       （3 位前缀 → 运营商；4 位前缀 → 虚拟运营商）
- *   4) 在线手机归属地     （淘宝 JSONP 仅 11 位手机号；GBK regex）
+ *   4) 百度网页抓取       （{@link BaiduWebLookup} 离屏 WebView 跑百度搜索
+ *                          innerText substring 解析全程 try-catch 失败回 null
+ *                          不需要 SYSTEM_ALERT_WINDOW淘宝 JSONP 已废弃）
  *
- * 与历史版本（WebView + 网页 innerText 抓取）的本质区别：
- *   - 不再起任何 WebView / 系统悬浮窗 不需要 SYSTEM_ALERT_WINDOW；
+ * 线程模型：
  *   - 全部 IO 走单线程 ExecutorService（拨号期间不会和 UI 抢主循环）；
- *   - 不再做 DOM/innerText 的 substring 启发式解析（旧版崩溃根源）；
+ *   - WebView 抓取在主线程创建IO 线程 CountDownLatch 等结果 8 秒超时；
+ *   - 所有 Callback 都在主线程触发；
  *   - 公共 API（{@link #query} / {@link CallerIdLookupCallback}）保持兼容 调用方无需改动
- *
- * 线程模型：所有 Callback 都在主线程触发
  */
 public final class CallerIdLookup {
 
@@ -69,10 +69,11 @@ public final class CallerIdLookup {
             return;
         }
 
+        var appCtx = ctx.getApplicationContext();
         IO.execute(() -> {
             String result = null;
             try {
-                result = resolveRemote(number);
+                result = resolveRemote(appCtx, number);
             } catch (Throwable e) {
                 Timber.e(e, "resolveRemote crashed for %s", number);
             }
@@ -90,15 +91,15 @@ public final class CallerIdLookup {
         return bi != null ? new CallerIdQuickHit(bi) : null;
     }
 
-    /** 异步链路：离线号段 → 在线 JSONP任一返回非空即截止 */
-    private static String resolveRemote(String number) {
-        // 1. 在线优先：能拿到"山东 山东移动"这种地区 + 运营商组合
-        var online = TaobaoLookup.lookupMobile(number);
-        if (online != null && !online.isEmpty()) return online;
-
-        // 2. 离线兜底：拿不到地区起码给出运营商
+    /** 异步链路：离线号段 → 百度网页抓取任一返回非空即截止 */
+    private static String resolveRemote(Context appCtx, String number) {
+        // 1. 离线兜底：先拿运营商 (毫秒级 无网络也能用)
         var carrier = CarrierSegments.carrierOf(number);
         if (carrier != null) return carrier;
+
+        // 2. 百度网页抓取 innerText substring (try-catch in BaiduWebLookup)
+        var web = BaiduWebLookup.lookup(appCtx, number);
+        if (web != null && !web.isEmpty()) return web;
 
         return null;
     }
