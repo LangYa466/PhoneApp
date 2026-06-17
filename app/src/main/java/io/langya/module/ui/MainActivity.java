@@ -2,12 +2,9 @@ package io.langya.module.ui;
 
 import android.Manifest;
 import android.app.role.RoleManager;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -15,11 +12,7 @@ import android.telecom.TelecomManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import androidx.annotation.NonNull;
 
@@ -37,7 +30,6 @@ import java.util.ArrayList;
 
 import io.langya.module.R;
 import io.langya.module.data.ContactsRepository;
-import io.langya.module.data.CrashLogger;
 import io.langya.module.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -116,42 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
         handleIntent(getIntent());
         requestCorePermissions();
-        maybeShowLastCrash();
-    }
-
-    /** 若上次运行崩溃过 启动时立刻弹出日志对话框 —— 防止用户进不了设置 */
-    private void maybeShowLastCrash() {
-        if (!CrashLogger.has(this)) return;
-        var content = CrashLogger.read(this);
-        if (content.isEmpty()) return;
-
-        var tv = new TextView(this);
-        tv.setText(content);
-        tv.setTextIsSelectable(true);
-        tv.setTypeface(Typeface.MONOSPACE);
-        tv.setTextSize(11f);
-        int p = (int) (16 * getResources().getDisplayMetrics().density);
-        tv.setPadding(p, p, p, p);
-        var scroll = new ScrollView(this);
-        scroll.addView(tv);
-
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.crash_dialog_title)
-                .setView(scroll)
-                .setCancelable(false)
-                .setPositiveButton(R.string.crash_dialog_close, null)
-                .setNeutralButton(R.string.crash_dialog_copy, (d, w) -> {
-                    var cm = getSystemService(ClipboardManager.class);
-                    if (cm != null) {
-                        cm.setPrimaryClip(ClipData.newPlainText("crash", content));
-                        toast(getString(R.string.toast_crash_copied));
-                    }
-                })
-                .setNegativeButton(R.string.crash_dialog_clear, (d, w) -> {
-                    CrashLogger.clear(this);
-                    toast(getString(R.string.toast_crash_cleared));
-                })
-                .show();
     }
 
     private void requestCorePermissions() {
