@@ -24,6 +24,10 @@
     <string name="toast_no_input">Please enter a number first</string>
     <string name="toast_need_call_permission">Call permission is required</string>
     <string name="toast_need_default_dialer">Set this app as the default phone app first</string>
+    <string name="dialer_suggest_create">Create new contact</string>
+    <string name="dialer_suggest_add">Add to a contact</string>
+    <string name="dialer_suggest_message">Send a message</string>
+    <string name="toast_no_app_to_handle">No app available to handle this</string>
 
     <!-- Call log -->
     <string name="calllog_empty_title">No call history yet</string>

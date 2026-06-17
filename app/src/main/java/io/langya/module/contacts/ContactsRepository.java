@@ -64,7 +64,6 @@ public final class ContactsRepository {
             }
         }
 
-        Timber.d("no match for: %s (index size=%d)", number, idx.size());
         return null;
     }
 

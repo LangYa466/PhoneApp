@@ -34,6 +34,7 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:allowBackup="false"
+        android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.CallerID">
 
         <!-- 默认电话应用入口：响应 ACTION_DIAL / tel: URI -->

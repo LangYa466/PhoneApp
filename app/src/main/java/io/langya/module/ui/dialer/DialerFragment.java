@@ -1,10 +1,13 @@
 package io.langya.module.ui.dialer;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.telecom.TelecomManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,9 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.i18n.phonenumbers.AsYouTypeFormatter;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+
 import io.langya.module.R;
 import io.langya.module.callerid.CallerIdResolver;
 import io.langya.module.databinding.DialButtonBinding;
@@ -29,6 +35,8 @@ public class DialerFragment extends Fragment {
     private FragmentDialerBinding b;
     private final StringBuilder buffer = new StringBuilder();
     private String lastLookupNumber = "";
+    private final AsYouTypeFormatter formatter =
+            PhoneNumberUtil.getInstance().getAsYouTypeFormatter("CN");
 
     private final ActivityResultLauncher<String> callPermLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
@@ -52,10 +60,18 @@ public class DialerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        wireKey(b.key0, '0'); wireKey(b.key1, '1'); wireKey(b.key2, '2');
-        wireKey(b.key3, '3'); wireKey(b.key4, '4'); wireKey(b.key5, '5');
-        wireKey(b.key6, '6'); wireKey(b.key7, '7'); wireKey(b.key8, '8');
-        wireKey(b.key9, '9'); wireKey(b.keyStar, '*'); wireKey(b.keyHash, '#');
+        wireKey(b.key1, '1', "");
+        wireKey(b.key2, '2', "ABC");
+        wireKey(b.key3, '3', "DEF");
+        wireKey(b.key4, '4', "GHI");
+        wireKey(b.key5, '5', "JKL");
+        wireKey(b.key6, '6', "MNO");
+        wireKey(b.key7, '7', "PQRS");
+        wireKey(b.key8, '8', "TUV");
+        wireKey(b.key9, '9', "WXYZ");
+        wireKey(b.keyStar, '*', "");
+        wireKey(b.key0, '0', "+");
+        wireKey(b.keyHash, '#', "");
 
         b.btnBackspace.setOnClickListener(v -> {
             if (buffer.length() == 0) return;
@@ -70,6 +86,11 @@ public class DialerFragment extends Fragment {
         b.btnBackspace.setIcon(Md3Icons.of(requireContext(), "mso-backspace"));
         b.btnCall.setIcon(Md3Icons.of(requireContext(), "mso-call"));
         b.btnCall.setOnClickListener(v -> attemptPlaceCall());
+
+        b.suggestCreate.setOnClickListener(v -> launchCreateContact());
+        b.suggestAdd.setOnClickListener(v -> launchAddToContact());
+        b.suggestMessage.setOnClickListener(v -> launchSendMessage());
+
         updateDisplay();
     }
 
@@ -82,7 +103,6 @@ public class DialerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // 一次性把通讯录权限要了 —— 用户家人来电时才显示备注
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
             contactsPermLauncher.launch(Manifest.permission.READ_CONTACTS);
@@ -95,32 +115,33 @@ public class DialerFragment extends Fragment {
         if (b != null) updateDisplay();
     }
 
-    private void wireKey(DialButtonBinding key, char digit) {
-        var btn = key.getRoot();
-        btn.setText(String.valueOf(digit));
-        btn.setOnClickListener(v -> {
+    private void wireKey(DialButtonBinding key, char digit, String letters) {
+        key.keyDigit.setText(String.valueOf(digit));
+        key.keyLetters.setText(letters);
+        key.getRoot().setOnClickListener(v -> {
             buffer.append(digit);
             updateDisplay();
         });
     }
 
     private void updateDisplay() {
-        var n = buffer.toString();
-        b.tvDisplay.setText(n);
+        var raw = buffer.toString();
+        b.tvDisplay.setText(formatForDisplay(raw));
         b.tvCallerId.setText("");
+        b.suggestions.setVisibility(raw.isEmpty() ? View.GONE : View.VISIBLE);
 
-        var contactName = CallerIdResolver.contactNameOf(requireContext(), n);
+        var contactName = CallerIdResolver.contactNameOf(requireContext(), raw);
         if (contactName != null) {
             b.tvCallerId.setText(contactName);
-            lastLookupNumber = n;
+            lastLookupNumber = raw;
             return;
         }
 
-        if (n.length() >= 3 && !n.equals(lastLookupNumber)) {
-            lastLookupNumber = n;
+        if (raw.length() >= 3 && !raw.equals(lastLookupNumber)) {
+            lastLookupNumber = raw;
             b.tvCallerId.setText(R.string.incall_querying);
-            CallerIdResolver.resolve(requireContext(), n, (displayName, fromContacts) -> {
-                if (!isAdded() || b == null || !n.equals(buffer.toString())) return;
+            CallerIdResolver.resolve(requireContext(), raw, (displayName, fromContacts) -> {
+                if (!isAdded() || b == null || !raw.equals(buffer.toString())) return;
                 requireActivity().runOnUiThread(() -> {
                     if (b == null) return;
                     if (displayName == null || displayName.isEmpty()) b.tvCallerId.setText("");
@@ -128,6 +149,24 @@ public class DialerFragment extends Fragment {
                 });
             });
         }
+    }
+
+    /**
+     * libphonenumber 边输入边格式化 国际号会显示 "+1 234 567 89" 国内号显示 "138 1234 5678"
+     * 含 * # 等 DTMF 字符不走格式化 直接显示原文
+     */
+    private String formatForDisplay(String raw) {
+        if (raw.isEmpty()) return "";
+        for (int i = 0; i < raw.length(); i++) {
+            char c = raw.charAt(i);
+            if (!Character.isDigit(c) && c != '+') return raw;
+        }
+        formatter.clear();
+        String result = "";
+        for (int i = 0; i < raw.length(); i++) {
+            result = formatter.inputDigit(raw.charAt(i));
+        }
+        return result;
     }
 
     private void attemptPlaceCall() {
@@ -148,6 +187,33 @@ public class DialerFragment extends Fragment {
             tm.placeCall(uri, new Bundle());
         } catch (SecurityException e) {
             toast(getString(R.string.toast_need_default_dialer));
+        }
+    }
+
+    private void launchCreateContact() {
+        var i = new Intent(Intent.ACTION_INSERT)
+                .setType(ContactsContract.Contacts.CONTENT_TYPE)
+                .putExtra(ContactsContract.Intents.Insert.PHONE, buffer.toString());
+        launchSafely(i);
+    }
+
+    private void launchAddToContact() {
+        var i = new Intent(Intent.ACTION_INSERT_OR_EDIT)
+                .setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE)
+                .putExtra(ContactsContract.Intents.Insert.PHONE, buffer.toString());
+        launchSafely(i);
+    }
+
+    private void launchSendMessage() {
+        var i = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + buffer.toString()));
+        launchSafely(i);
+    }
+
+    private void launchSafely(Intent i) {
+        try {
+            startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            toast(getString(R.string.toast_no_app_to_handle));
         }
     }
 

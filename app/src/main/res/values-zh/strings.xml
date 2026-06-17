@@ -24,6 +24,10 @@
     <string name="toast_no_input">请先输入号码</string>
     <string name="toast_need_call_permission">需要打电话权限</string>
     <string name="toast_need_default_dialer">请先把本应用设为默认电话应用</string>
+    <string name="dialer_suggest_create">建立新联系人</string>
+    <string name="dialer_suggest_add">添加至联系人</string>
+    <string name="dialer_suggest_message">发送短信</string>
+    <string name="toast_no_app_to_handle">没有可处理的应用</string>
 
     <!-- Call log -->
     <string name="calllog_empty_title">还没有通话记录</string>
