@@ -6,30 +6,21 @@
     android:gravity="center"
     android:orientation="vertical"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:background="?attr/selectableItemBackgroundBorderless">
 
-    <FrameLayout
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/bg_dock_button"
-        android:duplicateParentState="true">
-
-        <com.mikepenz.iconics.view.IconicsImageView
-            android:id="@+id/dockIcon"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_gravity="center"
-            android:contentDescription="@null"
-            android:duplicateParentState="true"
-            app:tint="@color/dock_icon_tint"
-            xmlns:app="http://schemas.android.com/apk/res-auto" />
-    </FrameLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/dockIcon"
+        style="@style/Widget.CallerID.DockIconButton"
+        android:clickable="false"
+        android:focusable="false"
+        android:duplicateParentState="true" />
 
     <TextView
         android:id="@+id/dockLabel"
+        style="@style/TextAppearance.Material3.LabelMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:textColor="#E6E1E5"
-        android:textSize="13sp" />
+        android:textColor="?attr/colorOnSurface" />
 </LinearLayout>

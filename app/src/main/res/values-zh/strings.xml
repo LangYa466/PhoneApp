@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">电话</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_dialer">拨号</string>
+    <string name="nav_recents">通话记录</string>
+
+    <!-- Default dialer prompt -->
+    <string name="prompt_default_title">设为默认电话应用</string>
+    <string name="prompt_default_desc">设置后所有来去电会通过本应用处理 号码识别才能生效</string>
+    <string name="prompt_default_action">设为默认</string>
+    <string name="prompt_contacts_title">读取通讯录</string>
+    <string name="prompt_contacts_desc">家人和朋友来电时显示备注名 否则只能识别公司商户号码</string>
+    <string name="prompt_contacts_action">授权</string>
+    <string name="toast_open_settings_for_contacts">系统已永久拒绝 请前往应用权限页授权</string>
+    <string name="toast_contacts_loaded">已读取 %1$d 个联系人</string>
+    <string name="toast_already_default">已经是默认电话应用</string>
+    <string name="toast_default_unsupported">当前系统不支持设置默认拨号应用</string>
+
+    <!-- Dialer -->
+    <string name="dialer_hint">输入号码</string>
+    <string name="dialer_call">呼叫</string>
+    <string name="toast_no_input">请先输入号码</string>
+    <string name="toast_need_call_permission">需要打电话权限</string>
+    <string name="toast_need_default_dialer">请先把本应用设为默认电话应用</string>
+
+    <!-- Call log -->
+    <string name="calllog_empty_title">还没有通话记录</string>
+    <string name="calllog_empty_desc">授权读取通话记录后会自动显示</string>
+    <string name="calllog_empty_grant">授权读取通话记录</string>
+    <string name="calllog_today">今天 %1$s</string>
+    <string name="calllog_yesterday">昨天 %1$s</string>
+    <string name="calllog_incoming">来电</string>
+    <string name="calllog_outgoing">已拨</string>
+    <string name="calllog_missed">未接</string>
+    <string name="calllog_rejected">已拒</string>
+    <string name="calllog_unknown">未知</string>
+    <string name="calllog_duration_min_sec">%1$d分%2$d秒</string>
+    <string name="calllog_duration_sec">%1$d秒</string>
+
+    <!-- In-call -->
+    <string name="incall_state_ringing">来电</string>
+    <string name="incall_state_dialing">正在呼叫…</string>
+    <string name="incall_state_connecting">接通中…</string>
+    <string name="incall_state_active">通话中</string>
+    <string name="incall_state_holding">已保持</string>
+    <string name="incall_state_disconnecting">挂断中…</string>
+    <string name="incall_state_disconnected">通话已结束</string>
+    <string name="incall_answer">接听</string>
+    <string name="incall_reject">拒接</string>
+    <string name="incall_hangup">挂断</string>
+    <string name="incall_mute">静音</string>
+    <string name="incall_unmute">取消静音</string>
+    <string name="incall_speaker">扬声器</string>
+    <string name="incall_querying">识别中…</string>
+    <string name="incall_unknown">未知号码</string>
+    <string name="incall_sim1">SIM1</string>
+    <string name="incall_dock_dialpad">拨号键盘</string>
+    <string name="incall_dock_mute">静音</string>
+    <string name="incall_dock_speaker">免提</string>
+    <string name="incall_speaker_off">听筒</string>
+    <string name="incall_dock_more">更多</string>
+    <string name="incall_more_title">更多</string>
+    <string name="incall_more_add">添加通话</string>
+    <string name="incall_more_hold">保持通话</string>
+    <string name="incall_more_unhold">恢复通话</string>
+    <string name="fg_channel">来电提示</string>
+
+    <!-- Settings -->
+    <string name="action_settings">设置</string>
+    <string name="title_settings">设置</string>
+    <string name="title_about">关于</string>
+    <string name="pref_about">关于</string>
+    <string name="pref_category_appearance">外观</string>
+    <string name="pref_category_phone">电话</string>
+    <string name="pref_category_cache">缓存</string>
+    <string name="pref_category_diagnostics">诊断</string>
+    <string name="pref_category_about">关于</string>
+    <string name="about_libraries">开源依赖</string>
+    <string name="about_apis">外部 API</string>
+    <string name="about_thanks">感谢所有开源作者 Material Symbols 由 Google 提供 Iconics 由 @mikepenz 维护</string>
+    <string name="about_api_taobao">tcc.taobao.com /cc/json/mobile_tel_segment.htm (手机号归属地查询)</string>
+    <string name="pref_theme_mode">深色模式</string>
+    <string name="pref_theme_color">主题色</string>
+    <string name="pref_default_dialer">默认电话应用</string>
+    <string name="pref_default_dialer_summary_yes">本应用已是默认</string>
+    <string name="pref_default_dialer_summary_no">点击设置为默认</string>
+    <string name="pref_clear_empty">清除无效缓存</string>
+    <string name="pref_clear_empty_summary">删除所有「未知号码」的占位缓存</string>
+    <string name="pref_clear_cache">清除全部缓存</string>
+    <string name="pref_crash_log">上次崩溃日志</string>
+    <string name="pref_crash_log_present">点击查看 / 复制 / 清除</string>
+    <string name="pref_crash_log_empty">没有崩溃记录</string>
+    <string name="crash_dialog_title">崩溃日志</string>
+    <string name="crash_dialog_copy">复制</string>
+    <string name="crash_dialog_clear">清除</string>
+    <string name="crash_dialog_close">关闭</string>
+    <string name="toast_crash_copied">日志已复制到剪贴板</string>
+    <string name="toast_crash_cleared">已清除崩溃日志</string>
+    <string name="toast_cache_cleared">已清除全部缓存</string>
+    <string name="toast_empty_cleared">已清除无效缓存</string>
+
+    <string-array name="theme_mode_entries">
+        <item>跟随系统</item>
+        <item>浅色</item>
+        <item>深色</item>
+    </string-array>
+    <string-array name="theme_mode_values">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+
+    <string-array name="theme_color_entries">
+        <item>动态取色（Android 12+）</item>
+        <item>蓝</item>
+        <item>绿</item>
+        <item>紫</item>
+        <item>红</item>
+        <item>橙</item>
+        <item>青</item>
+    </string-array>
+    <string-array name="theme_color_values">
+        <item>dynamic</item>
+        <item>blue</item>
+        <item>green</item>
+        <item>purple</item>
+        <item>red</item>
+        <item>orange</item>
+        <item>teal</item>
+    </string-array>
+</resources>

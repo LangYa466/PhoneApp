@@ -1,34 +1,37 @@
+import com.android.build.api.variant.ResValue
+
 plugins {
     id 'com.android.application'
 }
 
 android {
-    namespace 'io.langya.module'
-    compileSdk 37
+    namespace = 'io.langya.module'
+    compileSdk = 37
 
     defaultConfig {
-        applicationId "io.langya.module"
-        minSdk 33
-        targetSdk 35
-        versionCode 6
-        versionName "1.5"
+        applicationId = "io.langya.module"
+        minSdk = 33
+        targetSdk = 35
+        versionCode = 6
+        versionName = "1.5"
     }
 
     buildFeatures {
-        viewBinding true
-        buildConfig true
+        viewBinding = true
+        buildConfig = true
+        resValues = true
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     tasks.withType(JavaCompile).configureEach {
@@ -47,15 +50,28 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime:2.10.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.10.0'
 
-    // —— 轮子区 ——
-    // OkHttp：替代 HttpURLConnection
     implementation 'com.squareup.okhttp3:okhttp:5.4.0'
-    // Timber：日志免 TAG
     implementation 'com.jakewharton.timber:timber:5.0.1'
-    // libphonenumber：电话号归一化 / 校验
     implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.32'
-    // Iconics + Material Symbols Outlined（真正的 MD3 icon font）
     implementation 'com.mikepenz:iconics-core:5.5.0'
     implementation 'com.mikepenz:iconics-views:5.5.0'
     implementation 'com.mikepenz:material-symbols-typeface-outlined:0.39.3.1@aar'
+}
+
+/*
+ * 把 implementation 声明的依赖列表注入成字符串资源 (build_dependencies)
+ * AboutActivity 直接读这个资源 不硬编码版本号 改了依赖重 build 自动同步
+ */
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        def deps = configurations.implementation.dependencies
+                .matching { it.group != null && it.version != null }
+                .collect { "${it.group}:${it.name}:${it.version}".toString() }
+                .sort()
+                .join('\n')
+        variant.resValues.put(
+                variant.makeResValueKey('string', 'build_dependencies'),
+                new ResValue(deps, 'gradle-injected dependency list')
+        )
+    }
 }

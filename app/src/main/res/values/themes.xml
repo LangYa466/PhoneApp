@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Theme.CallerID" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.CallerID.BottomSheet</item>
+    </style>
+
+    <!--
+        ThemeManager.applyColor() 在每个 Activity onCreate super 之前调用
+        DynamicColorsOptions 用种子色生成完整 MD3 tonal palette
+        (覆盖全部 30+ 颜色 slot 不只是 primary)
+    -->
+
+    <style name="ThemeOverlay.CallerID.BottomSheet" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.CallerID.BottomSheet</item>
+    </style>
+
+    <style name="Widget.CallerID.BottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.LargeComponent</item>
+    </style>
+
     <style name="InCallDialpadRow" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -13,14 +34,72 @@
         <item name="android:orientation">horizontal</item>
     </style>
 
-    <style name="Theme.CallerID" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar" >true</item>
+    <!-- In-call hangup / answer / reject pills -->
+    <style name="Widget.CallerID.Button.Hangup" parent="Widget.Material3.Button">
+        <item name="android:layout_width">180dp</item>
+        <item name="android:layout_height">64dp</item>
+        <item name="cornerRadius">32dp</item>
+        <item name="backgroundTint">?attr/colorError</item>
+        <item name="iconTint">?attr/colorOnError</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconSize">28dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
     </style>
 
-    <!--
-        颜色派生不在 XML 里写 overlay 了 改由 ThemeManager.applyColor() 在每个
-        Activity onCreate super 之前调用 DynamicColorsOptions 用种子色生成完整
-        MD3 tonal palette (覆盖全部 30+ 颜色 slot 不只是 primary)
-    -->
+    <style name="Widget.CallerID.Button.Reject" parent="Widget.CallerID.Button.Hangup">
+        <item name="android:layout_width">140dp</item>
+    </style>
+
+    <style name="Widget.CallerID.Button.Answer" parent="Widget.Material3.Button">
+        <item name="android:layout_width">140dp</item>
+        <item name="android:layout_height">64dp</item>
+        <item name="cornerRadius">32dp</item>
+        <item name="backgroundTint">@color/answer_container</item>
+        <item name="iconTint">@color/on_answer_container</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconSize">28dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <!-- In-call dock icon (拨号键盘 / 静音 / 免提 / 更多) -->
+    <style name="Widget.CallerID.DockIconButton" parent="Widget.Material3.Button.IconButton.Filled">
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="cornerRadius">30dp</item>
+        <item name="backgroundTint">@color/dock_button_tint</item>
+        <item name="iconTint">@color/dock_icon_tint</item>
+        <item name="iconSize">26dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <!-- In-call DTMF keys -->
+    <style name="Widget.CallerID.DtmfKey" parent="Widget.Material3.Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">6dp</item>
+        <item name="cornerRadius">28dp</item>
+        <item name="backgroundTint">?attr/colorSurfaceContainerHigh</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <!-- "更多" 底部表内的列表行 -->
+    <style name="Widget.CallerID.MoreRow" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">14dp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
 </resources>

@@ -29,7 +29,7 @@
     </queries>
 
     <application
-        android:name=".App"
+        android:name=".CallerIdApp"
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -38,7 +38,7 @@
 
         <!-- 默认电话应用入口：响应 ACTION_DIAL / tel: URI -->
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>
@@ -64,13 +64,18 @@
         </activity>
 
         <activity
-            android:name=".ui.SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:exported="false"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.main.MainActivity" />
+
+        <activity
+            android:name=".ui.settings.AboutActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.settings.SettingsActivity" />
 
         <!-- 通话进行时全屏 UI -->
         <activity
-            android:name=".ui.InCallActivity"
+            android:name=".ui.incall.InCallActivity"
             android:exported="false"
             android:launchMode="singleInstance"
             android:taskAffinity=""
@@ -79,9 +84,14 @@
             android:showWhenLocked="true"
             android:turnScreenOn="true" />
 
+        <!-- 通知栏 CallStyle 按钮 (Hang/Answer/Reject/Speaker/Mute) -->
+        <receiver
+            android:name=".call.CallActionReceiver"
+            android:exported="false" />
+
         <!-- 系统的 InCallService —— 拿到 Call 对象 -->
         <service
-            android:name=".service.PhoneCallService"
+            android:name=".call.CallerIdInCallService"
             android:exported="true"
             android:permission="android.permission.BIND_INCALL_SERVICE">
             <meta-data

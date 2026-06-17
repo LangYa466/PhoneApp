@@ -5,17 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1C1B1F"
+    android:background="?attr/colorSurface"
     android:fitsSystemWindows="true">
 
-    <!-- ===== 顶部：状态 / 时长 / 姓名 / SIM / 来电识别 ===== -->
     <TextView
         android:id="@+id/tvDuration"
         style="@style/TextAppearance.Material3.TitleMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
-        android:textColor="#E6E1E5"
+        android:textColor="?attr/colorOnSurfaceVariant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,6 +22,7 @@
 
     <TextView
         android:id="@+id/tvName"
+        style="@style/TextAppearance.Material3.HeadlineMedium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
@@ -30,12 +30,10 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
-        android:textColor="#E6E1E5"
-        android:textSize="36sp"
+        android:textColor="?attr/colorOnSurface"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDuration"
-        tools:text="腾讯公益" />
+        app:layout_constraintTop_toBottomOf="@id/tvDuration" />
 
     <TextView
         android:id="@+id/tvSim"
@@ -45,7 +43,7 @@
         android:layout_marginTop="4dp"
         android:letterSpacing="0.08"
         android:text="@string/incall_sim1"
-        android:textColor="#B3B0B6"
+        android:textColor="?attr/colorOnSurfaceVariant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvName" />
@@ -61,7 +59,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvSim" />
 
-    <!-- ===== 大圆头像 ===== -->
     <FrameLayout
         android:id="@+id/avatarWrap"
         android:layout_width="160dp"
@@ -79,11 +76,9 @@
             android:layout_height="92dp"
             android:layout_gravity="center"
             android:contentDescription="@null"
-            app:iiv_color="#FFFFFF"
             app:iiv_icon="mso-person" />
     </FrameLayout>
 
-    <!-- ===== Dock 行：拨号键盘 / 静音 / 免提 / 更多 ===== -->
     <LinearLayout
         android:id="@+id/dockRow"
         android:layout_width="0dp"
@@ -102,7 +97,6 @@
         <include layout="@layout/in_call_dock_item" android:id="@+id/dockMore" />
     </LinearLayout>
 
-    <!-- ===== 挂断 / 接听-拒接 ===== -->
     <FrameLayout
         android:id="@+id/hangupRow"
         android:layout_width="0dp"
@@ -112,26 +106,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!-- 通话中：单个红药丸挂断 -->
-        <FrameLayout
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnHangup"
-            android:layout_width="180dp"
-            android:layout_height="64dp"
+            style="@style/Widget.CallerID.Button.Hangup"
             android:layout_gravity="center"
-            android:background="@drawable/bg_hangup_pill"
-            android:clickable="true"
-            android:focusable="true">
+            tools:ignore="ContentDescription" />
 
-            <com.mikepenz.iconics.view.IconicsImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center"
-                android:contentDescription="@null"
-                app:iiv_color="#1C1B1F"
-                app:iiv_icon="mso-call_end" />
-        </FrameLayout>
-
-        <!-- 来电：左拒右接 -->
         <LinearLayout
             android:id="@+id/ringingRow"
             android:layout_width="match_parent"
@@ -141,40 +121,16 @@
             android:orientation="horizontal"
             android:visibility="gone">
 
-            <FrameLayout
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReject"
-                android:layout_width="140dp"
-                android:layout_height="64dp"
+                style="@style/Widget.CallerID.Button.Reject"
                 android:layout_marginEnd="24dp"
-                android:background="@drawable/bg_hangup_pill"
-                android:clickable="true"
-                android:focusable="true">
+                tools:ignore="ContentDescription" />
 
-                <com.mikepenz.iconics.view.IconicsImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="@null"
-                    app:iiv_color="#1C1B1F"
-                    app:iiv_icon="mso-call_end" />
-            </FrameLayout>
-
-            <FrameLayout
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAnswer"
-                android:layout_width="140dp"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_answer_pill"
-                android:clickable="true"
-                android:focusable="true">
-
-                <com.mikepenz.iconics.view.IconicsImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="@null"
-                    app:iiv_color="#1C1B1F"
-                    app:iiv_icon="mso-call" />
-            </FrameLayout>
+                style="@style/Widget.CallerID.Button.Answer"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

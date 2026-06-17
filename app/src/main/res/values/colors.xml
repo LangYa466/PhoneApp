@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- MD3 风格的深饱和蓝（接近 M3 primary tone 40） -->
-    <color name="ic_launcher_background">#0B57D0</color>
+    <!-- launcher icon 亮色背景 (values-night/colors.xml 覆盖成黑) -->
+    <color name="ic_launcher_background">#FFFFFF</color>
+
+    <!--
+        MD3 没有内置「接听绿」 这里手定义一对 light/dark 色
+        采用 Material Color tone 90 / on=tone 10 风格 values-night/colors.xml 覆盖
+    -->
+    <color name="answer_container">#A0F0B5</color>
+    <color name="on_answer_container">#002110</color>
 </resources>

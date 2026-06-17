@@ -7,6 +7,7 @@ import android.util.TypedValue;
 
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.R;
 import com.mikepenz.iconics.IconicsDrawable;
 
 /**
@@ -33,8 +34,7 @@ public final class Md3Icons {
 
     private static int resolveOnSurface(Context ctx) {
         var tv = new TypedValue();
-        if (ctx.getTheme().resolveAttribute(
-                com.google.android.material.R.attr.colorOnSurface, tv, true)) {
+        if (ctx.getTheme().resolveAttribute(R.attr.colorOnSurface, tv, true)) {
             if (tv.resourceId != 0) return ContextCompat.getColor(ctx, tv.resourceId);
             return tv.data;
         }
