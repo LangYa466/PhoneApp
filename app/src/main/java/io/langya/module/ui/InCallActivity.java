@@ -120,8 +120,6 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
         return Math.round(v * getResources().getDisplayMetrics().density);
     }
 
-    // ---- Dock ----
-
     private void bindDock(InCallDockItemBinding dock, String iconKey, int labelRes, View.OnClickListener l) {
         dock.dockIcon.setImageDrawable(new IconicsDrawable(this, iconKey));
         dock.dockLabel.setText(labelRes);
@@ -147,8 +145,6 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
         b.dockMore.getRoot().setSelected(moreSheet != null && moreSheet.isShowing());
     }
 
-    // ---- Audio / hold / add ----
-
     private void toggleMute() {
         var s = CallManager.get().getAudioState();
         CallManager.get().setMuted(s == null || !s.isMuted());
@@ -173,8 +169,6 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
-
-    // ---- Bottom sheets ----
 
     private void showDialpadSheet() {
         if (dialpadSheet != null && dialpadSheet.isShowing()) return;
@@ -244,8 +238,6 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
         boolean holding = call != null && call.getDetails().getState() == Call.STATE_HOLDING;
         holdLabel.setText(holding ? R.string.incall_more_unhold : R.string.incall_more_hold);
     }
-
-    // ---- Render ----
 
     private void render() {
         if (isFinishing() || isDestroyed()) return;
@@ -329,7 +321,6 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
         return handle.getSchemeSpecificPart();
     }
 
-    // ---- CallManager.Listener ----
     @Override public void onCallAdded(Call call) { runOnUiThread(this::render); }
     @Override public void onCallRemoved(Call call) {
         runOnUiThread(() -> { if (primary() == null) finish(); else render(); });

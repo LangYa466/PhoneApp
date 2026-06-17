@@ -73,7 +73,6 @@ public final class CallManager {
     public void addListener(Listener l) { if (!listeners.contains(l)) listeners.add(l); }
     public void removeListener(Listener l) { listeners.remove(l); }
 
-    // ---- Controls ----
     public void answer(Call call) {
         if (call == null) return;
         call.answer(android.telecom.VideoProfile.STATE_AUDIO_ONLY);

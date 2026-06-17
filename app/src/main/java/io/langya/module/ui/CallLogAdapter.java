@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mikepenz.iconics.IconicsDrawable;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +69,7 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.VH> {
 
             b.tvNumber.setText(hasNumber ? number : "未知");
             b.tvSub.setText(formatSub(ctx, e));
-            b.ivType.setImageResource(iconFor(e));
+            b.ivType.setImageDrawable(new IconicsDrawable(ctx, iconKeyFor(e)));
             b.btnCallBack.setOnClickListener(v -> onCallBack.accept(number));
 
             if (!hasNumber) return;
@@ -92,11 +94,11 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.VH> {
             }
         }
 
-        private int iconFor(CallLogEntry e) {
-            if (e.isMissed())   return android.R.drawable.sym_call_missed;
-            if (e.isIncoming()) return android.R.drawable.sym_call_incoming;
-            if (e.isOutgoing()) return android.R.drawable.sym_call_outgoing;
-            return android.R.drawable.sym_action_call;
+        private String iconKeyFor(CallLogEntry e) {
+            if (e.isMissed())   return "mso-call_missed";
+            if (e.isIncoming()) return "mso-call_received";
+            if (e.isOutgoing()) return "mso-call_made";
+            return "mso-call";
         }
 
         private String formatSub(Context ctx, CallLogEntry e) {

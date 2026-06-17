@@ -95,7 +95,7 @@ public class DialerFragment extends Fragment {
     }
 
     private void wireKey(DialButtonBinding key, char digit) {
-        var btn = (MaterialButton) key.getRoot();
+        var btn = key.getRoot();
         btn.setText(String.valueOf(digit));
         btn.setOnClickListener(v -> {
             buffer.append(digit);
