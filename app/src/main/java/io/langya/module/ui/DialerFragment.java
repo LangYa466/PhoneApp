@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.iconics.typeface.library.googlematerial.GoogleMaterial;
 
 import io.langya.module.R;
 import io.langya.module.data.CallerIdResolver;
@@ -68,7 +67,7 @@ public class DialerFragment extends Fragment {
             updateDisplay();
             return true;
         });
-        b.btnCall.setIcon(new IconicsDrawable(requireContext(), GoogleMaterial.Icon.gmd_call));
+        b.btnCall.setIcon(new IconicsDrawable(requireContext(), "mso-call"));
         b.btnCall.setOnClickListener(v -> attemptPlaceCall());
         updateDisplay();
     }

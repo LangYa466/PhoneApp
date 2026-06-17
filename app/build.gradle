@@ -54,8 +54,8 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:5.0.1'
     // libphonenumber：电话号归一化 / 校验
     implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.32'
-    // Iconics + Google Material Design typeface
+    // Iconics + Material Symbols Outlined（真正的 MD3 icon font）
     implementation 'com.mikepenz:iconics-core:5.5.0'
     implementation 'com.mikepenz:iconics-views:5.5.0'
-    implementation 'com.mikepenz:google-material-typeface:4.0.0.2-kotlin@aar'
+    implementation 'com.mikepenz:material-symbols-typeface-outlined:0.39.3.1@aar'
 }

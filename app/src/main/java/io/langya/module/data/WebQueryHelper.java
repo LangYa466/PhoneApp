@@ -1,7 +1,6 @@
 package io.langya.module.data;
 
 import static io.langya.module.data.WebQuery.BUILTIN_DB;
-import static io.langya.module.data.WebQuery.SPECIAL_NUMBERS;
 
 import android.content.Context;
 import android.os.Handler;
@@ -15,11 +14,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 号码识别管线。流水线（顺序短路）：
- *   1) SPECIAL_NUMBERS   （内置）
- *   2) BUILTIN_DB        （内置 3000+ 条）
- *   3) CacheStore        （磁盘缓存，包括"已查过但未识别"的负缓存）
- *   4) 离线手机号段       （3 位前缀 → 运营商；4 位前缀 → 虚拟运营商）
- *   5) 在线手机归属地     （淘宝 JSONP，仅 11 位手机号；GBK regex）
+ *   1) BUILTIN_DB        （内置 3000+ 条，含报警/急救/客服等原 SPECIAL_NUMBERS）
+ *   2) CacheStore        （磁盘缓存，包括"已查过但未识别"的负缓存）
+ *   3) 离线手机号段       （3 位前缀 → 运营商；4 位前缀 → 虚拟运营商）
+ *   4) 在线手机归属地     （淘宝 JSONP，仅 11 位手机号；GBK regex）
  *
  * 与历史版本（WebView + 网页 innerText 抓取）的本质区别：
  *   - 不再起任何 WebView / 系统悬浮窗，不需要 SYSTEM_ALERT_WINDOW；
@@ -96,12 +94,8 @@ public final class WebQueryHelper {
 
     /** 同步、纯内存的快路径。返回 null 表示需要继续走异步链路。 */
     private static QuickHit quickHit(String number) {
-        for (var entry : SPECIAL_NUMBERS) {
-            if (entry[0].equals(number)) return new QuickHit(entry[1]);
-        }
         var bi = BUILTIN_DB.get(number);
-        if (bi != null) return new QuickHit(bi);
-        return null;
+        return bi != null ? new QuickHit(bi) : null;
     }
 
     /** 异步链路：离线号段 → 在线 JSONP。任一返回非空即截止。 */

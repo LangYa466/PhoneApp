@@ -4,8 +4,6 @@ import java.util.HashMap;
 
 public final class WebQuery {
     public static final HashMap<String, String> BUILTIN_DB;
-    public static final String[][] SPECIAL_NUMBERS;
-
     static {
         HashMap<String, String> map = new HashMap<>(3162);
         BUILTIN_DB = map;
@@ -1590,6 +1588,5 @@ public final class WebQuery {
         map.put("96811", "乐山市商业银行");
         map.put("96836", "长城华西银行");
         map.put("999", "红十字会急救台");
-        SPECIAL_NUMBERS = new String[][]{new String[]{"110", "报警电话"}, new String[]{"119", "火警电话"}, new String[]{"120", "急救电话"}, new String[]{"122", "交通报警"}, new String[]{"12110", "短信报警"}, new String[]{"96110", "反诈专线"}, new String[]{"12321", "骚扰举报"}, new String[]{"12315", "消费者投诉"}, new String[]{"12345", "政务服务热线"}, new String[]{"10086", "中国移动客服"}, new String[]{"10010", "中国联通客服"}, new String[]{"10000", "中国电信客服"}};
     }
 }
