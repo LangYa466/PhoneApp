@@ -8,8 +8,7 @@
             app:entries="@array/theme_mode_entries"
             app:entryValues="@array/theme_mode_values"
             app:defaultValue="system"
-            app:useSimpleSummaryProvider="true"
-            app:icon="@android:drawable/ic_menu_day" />
+            app:useSimpleSummaryProvider="true" />
 
         <ListPreference
             app:key="theme_color"
@@ -17,42 +16,36 @@
             app:entries="@array/theme_color_entries"
             app:entryValues="@array/theme_color_values"
             app:defaultValue="dynamic"
-            app:useSimpleSummaryProvider="true"
-            app:icon="@android:drawable/ic_menu_edit" />
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="电话">
         <Preference
             app:key="default_dialer"
-            app:title="@string/pref_default_dialer"
-            app:icon="@android:drawable/ic_menu_call" />
+            app:title="@string/pref_default_dialer" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="缓存">
         <Preference
             app:key="clear_empty"
             app:title="@string/pref_clear_empty"
-            app:summary="@string/pref_clear_empty_summary"
-            app:icon="@android:drawable/ic_menu_revert" />
+            app:summary="@string/pref_clear_empty_summary" />
 
         <Preference
             app:key="clear_cache"
-            app:title="@string/pref_clear_cache"
-            app:icon="@android:drawable/ic_menu_delete" />
+            app:title="@string/pref_clear_cache" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="诊断">
         <Preference
             app:key="crash_log"
-            app:title="@string/pref_crash_log"
-            app:icon="@android:drawable/stat_notify_error" />
+            app:title="@string/pref_crash_log" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="关于">
         <Preference
             app:key="about"
             app:title="@string/pref_about"
-            app:summary="完整默认电话应用 v1.0"
-            app:icon="@android:drawable/ic_menu_info_details" />
+            app:summary="完整默认电话应用 v1.0" />
     </PreferenceCategory>
 </PreferenceScreen>

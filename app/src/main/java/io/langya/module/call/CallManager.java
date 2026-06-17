@@ -12,10 +12,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 全局通话状态枢纽：PhoneCallService 把 Call 喂进来，InCallActivity 消费并控制。
+ * 全局通话状态枢纽：PhoneCallService 把 Call 喂进来 InCallActivity 消费并控制
  *
  * CallAudioState / InCallService.setMuted / setAudioRoute 在 API 35 后被
- * CallEndpoint 取代，但 minSdk=33 仍需老 API，整类抑制 deprecation。
+ * CallEndpoint 取代 但 minSdk=33 仍需老 API 整类抑制 deprecation
  */
 @SuppressWarnings("deprecation")
 public final class CallManager {
@@ -49,7 +49,7 @@ public final class CallManager {
     public void addCall(Call call) {
         if (calls.contains(call)) return;
         calls.add(call);
-        // 指定主线程 Handler，避免 Call 回调跑在 binder 线程上 (#15)
+        // 指定主线程 Handler 避免 Call 回调跑在 binder 线程上 (#15)
         call.registerCallback(callCallback, mainHandler);
         Timber.d("addCall %s state=%d", call, call.getDetails().getState());
         for (var l : new ArrayList<>(listeners)) l.onCallAdded(call);

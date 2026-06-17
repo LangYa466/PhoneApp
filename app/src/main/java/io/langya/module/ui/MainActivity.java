@@ -31,6 +31,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.mikepenz.iconics.IconicsDrawable;
+
 import java.util.ArrayList;
 
 import io.langya.module.R;
@@ -96,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
             if (callLogFragment == null) callLogFragment = new CallLogFragment();
         }
 
+        var navMenu = b.bottomNav.getMenu();
+        navMenu.findItem(R.id.nav_dialer).setIcon(Md3Icons.of(this, "mso-dialpad"));
+        navMenu.findItem(R.id.nav_calllog).setIcon(Md3Icons.of(this, "mso-history"));
+
         b.bottomNav.setOnItemSelectedListener(item -> {
             var tx = getSupportFragmentManager().beginTransaction();
             int id = item.getItemId();
@@ -113,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         maybeShowLastCrash();
     }
 
-    /** 若上次运行崩溃过，启动时立刻弹出日志对话框 —— 防止用户进不了设置。 */
+    /** 若上次运行崩溃过 启动时立刻弹出日志对话框 —— 防止用户进不了设置 */
     private void maybeShowLastCrash() {
         if (!CrashLogger.has(this)) return;
         var content = CrashLogger.read(this);
@@ -165,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        var settings = menu.findItem(R.id.action_settings);
+        if (settings != null) settings.setIcon(Md3Icons.of(this, "mso-settings"));
         return true;
     }
 

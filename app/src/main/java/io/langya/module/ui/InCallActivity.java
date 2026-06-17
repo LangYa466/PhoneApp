@@ -44,7 +44,7 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
     private TextView dtmfDisplay;
     private TextView holdLabel;
 
-    /** 当前正在显示的号码 —— 用作 WebQuery 异步回调的有效性判据，避免旧请求覆盖新号码。 */
+    /** 当前正在显示的号码 —— 用作 WebQuery 异步回调的有效性判据 避免旧请求覆盖新号码 */
     private String activeNumber = "";
 
     public static void launch(Context ctx) {
@@ -103,7 +103,7 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
 
     private Call primary() { return CallManager.get().primary(); }
 
-    /** Android 15+ 强制 edge-to-edge，给挂断/接听行加上系统手势栏 inset，避免被挡。 */
+    /** Android 15+ 强制 edge-to-edge 给挂断/接听行加上系统手势栏 inset 避免被挡 */
     private void applyEdgeInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(b.getRoot(), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
@@ -121,7 +121,7 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
     }
 
     private void bindDock(InCallDockItemBinding dock, String iconKey, int labelRes, View.OnClickListener l) {
-        dock.dockIcon.setImageDrawable(new IconicsDrawable(this, iconKey));
+        dock.dockIcon.setImageDrawable(Md3Icons.of(this, iconKey));
         dock.dockLabel.setText(labelRes);
         dock.getRoot().setOnClickListener(l);
     }
@@ -138,7 +138,7 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
         boolean muted = s != null && s.isMuted();
         boolean speaker = s != null && (s.getRoute() & CallAudioState.ROUTE_SPEAKER) != 0;
         b.dockMute.getRoot().setSelected(muted);
-        b.dockMute.dockIcon.setImageDrawable(new IconicsDrawable(this,
+        b.dockMute.dockIcon.setImageDrawable(Md3Icons.of(this,
                 muted ? "mso-mic_off" : "mso-mic"));
         b.dockSpeaker.getRoot().setSelected(speaker);
         b.dockDialpad.getRoot().setSelected(dialpadSheet != null && dialpadSheet.isShowing());
@@ -180,7 +180,7 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
         dtmfDisplay = view.findViewById(R.id.tvDtmf);
         var btnClose = (com.google.android.material.button.MaterialButton)
                 view.findViewById(R.id.btnCloseDialpad);
-        btnClose.setIcon(new IconicsDrawable(this, "mso-close"));
+        btnClose.setIcon(Md3Icons.of(this, "mso-close"));
         btnClose.setOnClickListener(v -> dialpadSheet.dismiss());
 
         wireDtmf(view, R.id.dtmf1, '1', "");
@@ -225,7 +225,7 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
 
         var btnClose = (com.google.android.material.button.MaterialButton)
                 view.findViewById(R.id.btnCloseMore);
-        btnClose.setIcon(new IconicsDrawable(this, "mso-close"));
+        btnClose.setIcon(Md3Icons.of(this, "mso-close"));
         btnClose.setOnClickListener(v -> moreSheet.dismiss());
         view.findViewById(R.id.rowAddCall).setOnClickListener(v -> { addCall(); moreSheet.dismiss(); });
         view.findViewById(R.id.rowHold).setOnClickListener(v -> { toggleHold(); refreshHoldRow(); });
@@ -274,7 +274,7 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
             b.tvName.setText(R.string.incall_unknown);
             b.tvCallerId.setText("");
         } else {
-            // tvName 永远显示「主名称」：通讯录备注名优先，否则原号码
+            // tvName 永远显示「主名称」：通讯录备注名优先 否则原号码
             var contactName = ContactsRepository.lookupName(this, safeNumber);
             b.tvName.setText(contactName != null ? contactName : safeNumber);
 
@@ -315,7 +315,7 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
         var handle = call.getDetails().getHandle();
         if (handle == null) return null;
         var scheme = handle.getScheme();
-        // 只处理 tel:/voicemail:，sip: 等忽略号码部分 (#10)
+        // 只处理 tel:/voicemail: sip: 等忽略号码部分 (#10)
         if (scheme == null) return null;
         if (!"tel".equalsIgnoreCase(scheme) && !"voicemail".equalsIgnoreCase(scheme)) return null;
         return handle.getSchemeSpecificPart();

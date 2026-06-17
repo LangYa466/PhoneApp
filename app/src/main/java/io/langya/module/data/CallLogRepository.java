@@ -29,7 +29,7 @@ public final class CallLogRepository {
         if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.READ_CALL_LOG)
                 != PackageManager.PERMISSION_GRANTED) return list;
 
-        // Android 11+ 不允许 sort 里塞 LIMIT，必须走 Bundle 参数
+        // Android 11+ 不允许 sort 里塞 LIMIT 必须走 Bundle 参数
         var args = new Bundle();
         args.putStringArray(ContentResolver.QUERY_ARG_SORT_COLUMNS, new String[]{CallLog.Calls.DATE});
         args.putInt(ContentResolver.QUERY_ARG_SORT_DIRECTION,

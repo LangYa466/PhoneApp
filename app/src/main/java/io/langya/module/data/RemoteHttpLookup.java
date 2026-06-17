@@ -12,11 +12,11 @@ import okhttp3.ResponseBody;
 import timber.log.Timber;
 
 /**
- * 阻塞式 HTTP 号码归属地查询。**不要在主线程调用。**
- * 数据源：淘宝公开手机号段 JSONP 接口（GBK 编码，无需鉴权）。
+ * 阻塞式 HTTP 号码归属地查询**不要在主线程调用**
+ * 数据源：淘宝公开手机号段 JSONP 接口（GBK 编码 无需鉴权）
  *
  * 用 OkHttp 替代 HttpURLConnection 后：连接池、超时、重试、UA 默认头
- * 全部由客户端实例管理，本类只剩 URL 拼装 + GBK regex。
+ * 全部由客户端实例管理 本类只剩 URL 拼装 + GBK regex
  */
 public final class RemoteHttpLookup {
 
@@ -39,8 +39,8 @@ public final class RemoteHttpLookup {
     private RemoteHttpLookup() {}
 
     /**
-     * 查 11 位手机号归属地 + 运营商。命中返回 "山东移动"；查不到返回 null。
-     * 线程安全；阻塞调用方线程直到收到响应或超时。
+     * 查 11 位手机号归属地 + 运营商命中返回 "山东移动"；查不到返回 null
+     * 线程安全；阻塞调用方线程直到收到响应或超时
      */
     public static String lookupMobile(String number) {
         if (!MobileSegment.isChinaMobile(number)) return null;

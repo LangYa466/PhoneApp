@@ -12,8 +12,8 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * 全局未捕获异常落盘。崩溃发生时把堆栈写入 filesDir/crash.log，
- * 下次启动可以从设置里看上次崩了啥。
+ * 全局未捕获异常落盘崩溃发生时把堆栈写入 filesDir/crash.log 
+ * 下次启动可以从设置里看上次崩了啥
  */
 public final class CrashLogger {
 

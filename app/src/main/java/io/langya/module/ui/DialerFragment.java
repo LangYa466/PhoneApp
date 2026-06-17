@@ -67,7 +67,8 @@ public class DialerFragment extends Fragment {
             updateDisplay();
             return true;
         });
-        b.btnCall.setIcon(new IconicsDrawable(requireContext(), "mso-call"));
+        b.btnBackspace.setIcon(Md3Icons.of(requireContext(), "mso-backspace"));
+        b.btnCall.setIcon(Md3Icons.of(requireContext(), "mso-call"));
         b.btnCall.setOnClickListener(v -> attemptPlaceCall());
         updateDisplay();
     }
@@ -108,7 +109,7 @@ public class DialerFragment extends Fragment {
         b.tvDisplay.setText(n);
         b.tvCallerId.setText("");
 
-        // 联系人匹配是同步且即时的，直接显示
+        // 联系人匹配是同步且即时的 直接显示
         var contactName = CallerIdResolver.contactNameOf(requireContext(), n);
         if (contactName != null) {
             b.tvCallerId.setText(contactName);

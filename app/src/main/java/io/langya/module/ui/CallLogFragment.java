@@ -54,7 +54,7 @@ public class CallLogFragment extends Fragment {
         reload();
     }
 
-    /** BottomNav 切到本 tab 时 onResume 不会重新触发，必须监听 hidden 变化。 */
+    /** BottomNav 切到本 tab 时 onResume 不会重新触发 必须监听 hidden 变化 */
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
@@ -87,11 +87,11 @@ public class CallLogFragment extends Fragment {
         final var adapter = new CallLogAdapter(items, this::callBack);
         b.recycler.setAdapter(adapter);
 
-        // 历史号码后台串行识别：一次只跑一个 WebView，识别完即喂给 adapter
+        // 历史号码后台串行识别：一次只跑一个 WebView 识别完即喂给 adapter
         final var appCtx = requireContext().getApplicationContext();
         for (var e : items) {
             CallerIdBatchResolver.enqueue(appCtx, e.number(),
-                    (number, name) -> adapter.setLiveName(number, name));
+                    adapter::setLiveName);
         }
     }
 

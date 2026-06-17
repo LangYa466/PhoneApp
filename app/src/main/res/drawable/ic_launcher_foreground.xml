@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    MD3 keyline: canvas 108dp, safe zone 72dp, keyline 66dp。
-    电话 glyph 取 24x24 viewport, scale 3.0 → 显示 54dp (MD3 圆形 keyline)。
-    group: scale 先于 translate；path 内部 bbox 约 (3,3)–(21,21)。
-    缩放后 bbox = (9,9)–(63,63), 中心 (36,36)。
-    平移 (18,18) 使其落在 canvas 中心 (54,54)。
+    MD3 keyline: canvas 108dp, safe zone 72dp, keyline 66dp
+    电话 glyph 取 24x24 viewport, scale 3.0 → 显示 54dp (MD3 圆形 keyline)
+    group: scale 先于 translate；path 内部 bbox 约 (3,3)–(21,21)
+    缩放后 bbox = (9,9)–(63,63), 中心 (36,36)
+    平移 (18,18) 使其落在 canvas 中心 (54,54)
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"

@@ -13,22 +13,21 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 号码识别管线。流水线（顺序短路）：
- *   1) BUILTIN_DB        （内置 3000+ 条，含报警/急救/客服等原 SPECIAL_NUMBERS）
- *   2) CacheStore        （磁盘缓存，包括"已查过但未识别"的负缓存）
+ * 号码识别管线流水线（顺序短路）：
+ *   1) BUILTIN_DB        （内置 3000+ 条 含报警/急救/客服等原 SPECIAL_NUMBERS）
+ *   2) CacheStore        （磁盘缓存 包括"已查过但未识别"的负缓存）
  *   3) 离线手机号段       （3 位前缀 → 运营商；4 位前缀 → 虚拟运营商）
- *   4) 在线手机归属地     （淘宝 JSONP，仅 11 位手机号；GBK regex）
+ *   4) 在线手机归属地     （淘宝 JSONP 仅 11 位手机号；GBK regex）
  *
  * 与历史版本（WebView + 网页 innerText 抓取）的本质区别：
- *   - 不再起任何 WebView / 系统悬浮窗，不需要 SYSTEM_ALERT_WINDOW；
+ *   - 不再起任何 WebView / 系统悬浮窗 不需要 SYSTEM_ALERT_WINDOW；
  *   - 全部 IO 走单线程 ExecutorService（拨号期间不会和 UI 抢主循环）；
  *   - 不再做 DOM/innerText 的 substring 启发式解析（旧版崩溃根源）；
- *   - 公共 API（{@link #query} / {@link Callback}）保持兼容，调用方无需改动。
+ *   - 公共 API（{@link #query} / {@link Callback}）保持兼容 调用方无需改动
  *
- * 线程模型：所有 Callback 都在主线程触发。
+ * 线程模型：所有 Callback 都在主线程触发
  */
 public final class WebQueryHelper {
-
 
     private static final ExecutorService IO = Executors.newSingleThreadExecutor(new ThreadFactory() {
         private final AtomicInteger seq = new AtomicInteger();
@@ -47,8 +46,8 @@ public final class WebQueryHelper {
     }
 
     /**
-     * 异步查询。Callback 在主线程触发。多次重入安全，但不会去重——
-     * 串行去重在更上层（{@link CallerIdBatchResolver}）做。
+     * 异步查询Callback 在主线程触发多次重入安全 但不会去重——
+     * 串行去重在更上层（{@link CallerIdBatchResolver}）做
      */
     public void query(Context ctx, String number, Callback cb) {
         Timber.d("query: %s", number);
@@ -57,7 +56,6 @@ public final class WebQueryHelper {
             return;
         }
 
-        // —— 同步快路径 ——
         var quick = quickHit(number);
         if (quick != null) {
             Timber.d("FAST hit: %s -> %s", number, quick.value);
@@ -66,7 +64,6 @@ public final class WebQueryHelper {
             return;
         }
 
-        // —— 缓存 ——
         CacheStore.init(ctx);
         var cached = CacheStore.get(number);
         if (cached != null) {
@@ -76,7 +73,6 @@ public final class WebQueryHelper {
             return;
         }
 
-        // —— 后台执行 ——
         IO.execute(() -> {
             String result = null;
             try {
@@ -85,20 +81,20 @@ public final class WebQueryHelper {
                 Timber.e(e, "resolveRemote crashed for %s", number);
             }
             final String value = result;
-            // 负缓存：未识别同样写入 ""，避免反复发起请求
+            // 负缓存：未识别同样写入 "" 避免反复发起请求
             CacheStore.put(number, value == null ? "" : value);
             Timber.d("REMOTE result %s -> %s", number, value);
             MAIN.post(() -> cb.onResult(value));
         });
     }
 
-    /** 同步、纯内存的快路径。返回 null 表示需要继续走异步链路。 */
+    /** 同步、纯内存的快路径返回 null 表示需要继续走异步链路 */
     private static QuickHit quickHit(String number) {
         var bi = BUILTIN_DB.get(number);
         return bi != null ? new QuickHit(bi) : null;
     }
 
-    /** 异步链路：离线号段 → 在线 JSONP。任一返回非空即截止。 */
+    /** 异步链路：离线号段 → 在线 JSONP任一返回非空即截止 */
     private static String resolveRemote(String number) {
         // 1. 在线优先：能拿到"山东 山东移动"这种地区 + 运营商组合
         var online = RemoteHttpLookup.lookupMobile(number);

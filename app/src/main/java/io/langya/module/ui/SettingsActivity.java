@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.mikepenz.iconics.IconicsDrawable;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.ListPreference;
@@ -33,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(Md3Icons.of(this, "mso-arrow_back"));
         toolbar.setNavigationOnClickListener(v -> finish());
     }
 
@@ -52,6 +54,23 @@ public class SettingsActivity extends AppCompatActivity {
                 Toast.makeText(getContext(), R.string.toast_cache_cleared, Toast.LENGTH_SHORT).show();
             });
             bindAction("crash_log", this::showCrashLog);
+            applyMd3Icons();
+        }
+
+        private void applyMd3Icons() {
+            var ctx = requireContext();
+            setPrefIcon(ctx, ThemeManager.KEY_MODE, "mso-contrast");
+            setPrefIcon(ctx, ThemeManager.KEY_COLOR, "mso-palette");
+            setPrefIcon(ctx, "default_dialer", "mso-call");
+            setPrefIcon(ctx, "clear_empty", "mso-cleaning_services");
+            setPrefIcon(ctx, "clear_cache", "mso-delete");
+            setPrefIcon(ctx, "crash_log", "mso-bug_report");
+            setPrefIcon(ctx, "about", "mso-info");
+        }
+
+        private void setPrefIcon(Context ctx, String key, String iconKey) {
+            var pref = findPreference(key);
+            if (pref != null) pref.setIcon(Md3Icons.of(ctx, iconKey));
         }
 
         @Override

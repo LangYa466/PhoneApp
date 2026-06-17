@@ -13,14 +13,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 系统通讯录查询。
+ * 系统通讯录查询
  *
  * 两层匹配：
- *  1. ContactsContract.PhoneLookup —— 系统标准，绝大多数情况命中
+ *  1. ContactsContract.PhoneLookup —— 系统标准 绝大多数情况命中
  *  2. 内存预构建 Phone 表 HashMap 索引 —— PhoneLookup 漏掉时（+86 / 空格 / 国家码差异）
  *     用归一化后的数字串和「末 11 位」双 key 命中
  *
- * 索引懒加载并永久缓存；权限或联系人变化时调用 invalidate()。
+ * 索引懒加载并永久缓存；权限或联系人变化时调用 invalidate()
  */
 public final class ContactsRepository {
 
@@ -66,7 +66,7 @@ public final class ContactsRepository {
         return null;
     }
 
-    /** 权限变化、或用户在系统通讯录新增/修改联系人后调用，下次 lookup 时重建。 */
+    /** 权限变化、或用户在系统通讯录新增/修改联系人后调用 下次 lookup 时重建 */
     public static void invalidate() {
         synchronized (indexLock) { phoneIndex = null; }
     }
@@ -134,7 +134,7 @@ public final class ContactsRepository {
         return map;
     }
 
-    /** 让 UI 主动暖起索引并返回索引 key 数（用于诊断 toast）。 */
+    /** 让 UI 主动暖起索引并返回索引 key 数（用于诊断 toast） */
     public static int prefetchAndCount(Context ctx) {
         invalidate();
         return ensureIndex(ctx).size();

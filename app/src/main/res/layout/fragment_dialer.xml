@@ -49,12 +49,11 @@
                 android:id="@+id/btnBackspace"
                 style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@android:drawable/ic_input_delete" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- 拨号键盘容器：占据中部剩余空间，键盘居中 -->
+    <!-- 拨号键盘容器：占据中部剩余空间 键盘居中 -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

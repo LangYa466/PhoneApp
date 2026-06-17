@@ -25,7 +25,7 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.VH> {
 
     private final List<CallLogEntry> items;
     private final Consumer<String> onCallBack;
-    /** 由 CallerIdBatchResolver 异步填充，bind() 同步读取。 */
+    /** 由 CallerIdBatchResolver 异步填充 bind() 同步读取 */
     private final Map<String, String> liveNames = new HashMap<>();
 
     public CallLogAdapter(List<CallLogEntry> items, Consumer<String> onCallBack) {
@@ -33,7 +33,7 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.VH> {
         this.onCallBack = onCallBack;
     }
 
-    /** 后台识别完成后调用：把结果塞进 session 缓存并刷新所有匹配的行。 */
+    /** 后台识别完成后调用：把结果塞进 session 缓存并刷新所有匹配的行 */
     public void setLiveName(String number, String name) {
         if (number == null) return;
         if (name == null || name.isEmpty()) return;
@@ -69,12 +69,13 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.VH> {
 
             b.tvNumber.setText(hasNumber ? number : "未知");
             b.tvSub.setText(formatSub(ctx, e));
-            b.ivType.setImageDrawable(new IconicsDrawable(ctx, iconKeyFor(e)));
+            b.ivType.setImageDrawable(Md3Icons.of(ctx, iconKeyFor(e)));
+            b.btnCallBack.setIcon(Md3Icons.of(ctx, "mso-call"));
             b.btnCallBack.setOnClickListener(v -> onCallBack.accept(number));
 
             if (!hasNumber) return;
 
-            // 1. 通讯录命中：标题用备注名，副标题展示原号码 + 类型时间
+            // 1. 通讯录命中：标题用备注名 副标题展示原号码 + 类型时间
             var contactName = ContactsRepository.lookupName(ctx, number);
             if (contactName != null) {
                 b.tvNumber.setText(contactName);

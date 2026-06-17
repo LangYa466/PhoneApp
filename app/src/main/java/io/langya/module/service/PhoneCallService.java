@@ -10,12 +10,12 @@ import io.langya.module.call.CallManager;
 import io.langya.module.ui.InCallActivity;
 
 /**
- * 系统在本应用成为默认电话应用后绑定本服务，每一通来去电都会回调到这里。
- * 直接拉起 InCallActivity，不发通知。
+ * 系统在本应用成为默认电话应用后绑定本服务 每一通来去电都会回调到这里
+ * 直接拉起 InCallActivity 不发通知
  *
  * onCallAudioStateChanged + CallAudioState 在 API 35 起被标记 deprecated（被
- * CallEndpoint 取代），但新 API 需要 InCallService 走 onAvailableCallEndpoints
- * 流程，而我们的 minSdk=33 必须双路兜底——这里整类抑制 deprecation。
+ * CallEndpoint 取代） 但新 API 需要 InCallService 走 onAvailableCallEndpoints
+ * 流程 而我们的 minSdk=33 必须双路兜底——这里整类抑制 deprecation
  */
 @SuppressWarnings("deprecation")
 public class PhoneCallService extends InCallService {

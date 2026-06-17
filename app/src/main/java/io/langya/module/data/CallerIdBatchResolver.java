@@ -11,15 +11,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 通话记录历史号码后台识别 —— 串行队列，每次只跑一个 WebView。
- * 滚动期间多次入队同号会被去重。每完成一次回调到 Listener，UI 刷对应行。
+ * 通话记录历史号码后台识别 —— 串行队列 每次只跑一个 WebView
+ * 滚动期间多次入队同号会被去重每完成一次回调到 Listener UI 刷对应行
  */
 public final class CallerIdBatchResolver {
 
 
     public interface Listener {
         /**
-         * 识别完成，在主线程触发。
+         * 识别完成 在主线程触发
          * @param name 识别结果；null/空 = 未知号码
          */
         void onResolved(String number, String name);
