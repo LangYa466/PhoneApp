@@ -13,7 +13,11 @@ import java.util.List;
 
 /**
  * 全局通话状态枢纽：PhoneCallService 把 Call 喂进来，InCallActivity 消费并控制。
+ *
+ * CallAudioState / InCallService.setMuted / setAudioRoute 在 API 35 后被
+ * CallEndpoint 取代，但 minSdk=33 仍需老 API，整类抑制 deprecation。
  */
+@SuppressWarnings("deprecation")
 public final class CallManager {
 
     private static final CallManager INSTANCE = new CallManager();

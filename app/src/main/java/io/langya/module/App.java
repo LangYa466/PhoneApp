@@ -3,7 +3,7 @@ package io.langya.module;
 import android.app.Application;
 
 import com.mikepenz.iconics.Iconics;
-import com.mikepenz.iconics.typeface.library.googlematerial.outlined.GoogleMaterialOutlined;
+import com.mikepenz.iconics.typeface.library.googlematerial.GoogleMaterial;
 
 import io.langya.module.data.CacheStore;
 import io.langya.module.data.CrashLogger;
@@ -18,7 +18,7 @@ public class App extends Application {
             Timber.plant(new Timber.DebugTree());
         }
         Iconics.init(this);
-        Iconics.registerFont(GoogleMaterialOutlined.INSTANCE);
+        Iconics.registerFont(GoogleMaterial.INSTANCE);
         CrashLogger.install(this);
         ThemeManager.applyNightMode(this);
         CacheStore.init(this);

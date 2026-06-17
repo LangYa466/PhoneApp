@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
-import com.mikepenz.iconics.typeface.library.googlematerial.outlined.GoogleMaterialOutlined;
+import com.mikepenz.iconics.typeface.library.googlematerial.GoogleMaterial;
 
 import io.langya.module.R;
 import io.langya.module.call.CallManager;
@@ -30,6 +30,7 @@ import io.langya.module.data.WebQueryHelper;
 import io.langya.module.databinding.ActivityInCallBinding;
 import io.langya.module.databinding.InCallDockItemBinding;
 
+@SuppressWarnings("deprecation") // CallAudioState 路径在 minSdk=33 仍是唯一可用 API
 public class InCallActivity extends AppCompatActivity implements CallManager.Listener {
 
     private static final int DOCK_DIALPAD = 0, DOCK_MUTE = 1, DOCK_SPEAKER = 2, DOCK_MORE = 3;
@@ -65,11 +66,11 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
         setContentView(b.getRoot());
         applyEdgeInsets();
 
-        bindDock(b.dockDialpad, GoogleMaterialOutlined.Icon.gmo_dialpad, R.string.incall_dock_dialpad,
+        bindDock(b.dockDialpad, GoogleMaterial.Icon.gmd_dialpad, R.string.incall_dock_dialpad,
                 v -> { showDialpadSheet(); markDock(DOCK_DIALPAD); });
-        bindDock(b.dockMute, GoogleMaterialOutlined.Icon.gmo_mic, R.string.incall_dock_mute, v -> toggleMute());
-        bindDock(b.dockSpeaker, GoogleMaterialOutlined.Icon.gmo_volume_up, R.string.incall_dock_speaker, v -> toggleSpeaker());
-        bindDock(b.dockMore, GoogleMaterialOutlined.Icon.gmo_more_vert, R.string.incall_dock_more,
+        bindDock(b.dockMute, GoogleMaterial.Icon.gmd_mic, R.string.incall_dock_mute, v -> toggleMute());
+        bindDock(b.dockSpeaker, GoogleMaterial.Icon.gmd_volume_up, R.string.incall_dock_speaker, v -> toggleSpeaker());
+        bindDock(b.dockMore, GoogleMaterial.Icon.gmd_more_vert, R.string.incall_dock_more,
                 v -> { showMoreSheet(); markDock(DOCK_MORE); });
 
         // 不立即 finish() —— 等 onCallRemoved 回来再走 (#11)
@@ -142,7 +143,7 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
         boolean speaker = s != null && (s.getRoute() & CallAudioState.ROUTE_SPEAKER) != 0;
         b.dockMute.getRoot().setSelected(muted);
         b.dockMute.dockIcon.setImageDrawable(new IconicsDrawable(this,
-                muted ? GoogleMaterialOutlined.Icon.gmo_mic_off : GoogleMaterialOutlined.Icon.gmo_mic));
+                muted ? GoogleMaterial.Icon.gmd_mic_off : GoogleMaterial.Icon.gmd_mic));
         b.dockSpeaker.getRoot().setSelected(speaker);
         b.dockDialpad.getRoot().setSelected(dialpadSheet != null && dialpadSheet.isShowing());
         b.dockMore.getRoot().setSelected(moreSheet != null && moreSheet.isShowing());
@@ -187,7 +188,7 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
         dtmfDisplay = view.findViewById(R.id.tvDtmf);
         var btnClose = (com.google.android.material.button.MaterialButton)
                 view.findViewById(R.id.btnCloseDialpad);
-        btnClose.setIcon(new IconicsDrawable(this, GoogleMaterialOutlined.Icon.gmo_close));
+        btnClose.setIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_close));
         btnClose.setOnClickListener(v -> dialpadSheet.dismiss());
 
         wireDtmf(view, R.id.dtmf1, '1', "");
@@ -232,7 +233,7 @@ public class InCallActivity extends AppCompatActivity implements CallManager.Lis
 
         var btnClose = (com.google.android.material.button.MaterialButton)
                 view.findViewById(R.id.btnCloseMore);
-        btnClose.setIcon(new IconicsDrawable(this, GoogleMaterialOutlined.Icon.gmo_close));
+        btnClose.setIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_close));
         btnClose.setOnClickListener(v -> moreSheet.dismiss());
         view.findViewById(R.id.rowAddCall).setOnClickListener(v -> { addCall(); moreSheet.dismiss(); });
         view.findViewById(R.id.rowHold).setOnClickListener(v -> { toggleHold(); refreshHoldRow(); });

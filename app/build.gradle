@@ -10,8 +10,8 @@ android {
         applicationId "io.langya.module"
         minSdk 33
         targetSdk 35
-        versionCode 5
-        versionName "1.4"
+        versionCode 6
+        versionName "1.5"
     }
 
     buildFeatures {
@@ -29,6 +29,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs += ['-Xlint:deprecation', '-Xlint:unchecked']
     }
 }
 
@@ -50,8 +54,8 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:5.0.1'
     // libphonenumber：电话号归一化 / 校验
     implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.32'
-    // Iconics + Material Symbols Outlined (MD3 默认表达)
+    // Iconics + Google Material Design typeface
     implementation 'com.mikepenz:iconics-core:5.5.0'
     implementation 'com.mikepenz:iconics-views:5.5.0'
-    implementation 'com.mikepenz:google-material-typeface-outlined:4.0.0.2-kotlin@aar'
+    implementation 'com.mikepenz:google-material-typeface:4.0.0.2-kotlin@aar'
 }
