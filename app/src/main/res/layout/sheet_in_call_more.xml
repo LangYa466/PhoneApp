@@ -57,7 +57,7 @@
                 android:layout_gravity="center"
                 android:contentDescription="@null"
                 app:iiv_color="#E6E1E5"
-                app:iiv_icon="gmd-add_call" />
+                app:iiv_icon="gmo-add_call" />
         </FrameLayout>
 
         <TextView
@@ -94,7 +94,7 @@
                 android:layout_gravity="center"
                 android:contentDescription="@null"
                 app:iiv_color="#E6E1E5"
-                app:iiv_icon="gmd-pause" />
+                app:iiv_icon="gmo-pause" />
         </FrameLayout>
 
         <TextView
