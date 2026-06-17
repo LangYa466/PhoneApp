@@ -19,11 +19,15 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import android.net.Uri;
+
+import io.langya.module.BuildConfig;
 import io.langya.module.R;
 import io.langya.module.callerid.CallerIdCache;
 import io.langya.module.diagnostics.CrashLogger;
 import io.langya.module.ui.Md3Icons;
 import io.langya.module.ui.ThemeManager;
+import io.langya.module.update.UpdateChecker;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
@@ -42,8 +46,40 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             Toast.makeText(getContext(), R.string.toast_cache_cleared, Toast.LENGTH_SHORT).show();
         });
         bindAction("crash_log", this::showCrashLog);
+        bindCheckUpdate();
         bindAbout();
         applyMd3Icons();
+    }
+
+    private void bindCheckUpdate() {
+        var pref = findPreference("check_update");
+        if (pref == null) return;
+        pref.setSummary(getString(R.string.pref_check_update_summary, BuildConfig.VERSION_NAME));
+        pref.setOnPreferenceClickListener(p -> {
+            var ctx = requireContext();
+            Toast.makeText(ctx, R.string.update_checking, Toast.LENGTH_SHORT).show();
+            UpdateChecker.checkNow(ctx, result -> {
+                if (!isAdded()) return;
+                if (result == null) {
+                    Toast.makeText(ctx, R.string.update_check_failed, Toast.LENGTH_SHORT).show();
+                } else if (result.hasUpdate) {
+                    new MaterialAlertDialogBuilder(ctx)
+                            .setTitle(R.string.update_dialog_title)
+                            .setMessage(getString(R.string.update_dialog_msg,
+                                    BuildConfig.VERSION_NAME, result.latestVersion))
+                            .setPositiveButton(R.string.update_dialog_open,
+                                    (d, w) -> startActivity(new Intent(Intent.ACTION_VIEW,
+                                            Uri.parse(result.htmlUrl))))
+                            .setNegativeButton(R.string.update_dialog_later, null)
+                            .show();
+                } else {
+                    Toast.makeText(ctx,
+                            getString(R.string.update_already_latest, BuildConfig.VERSION_NAME),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+            return true;
+        });
     }
 
     private void bindAbout() {
@@ -63,6 +99,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPrefIcon(ctx, "clear_empty", "mso-cleaning_services");
         setPrefIcon(ctx, "clear_cache", "mso-delete");
         setPrefIcon(ctx, "crash_log", "mso-bug_report");
+        setPrefIcon(ctx, "check_update", "mso-system_update");
         setPrefIcon(ctx, "about", "mso-info");
     }
 

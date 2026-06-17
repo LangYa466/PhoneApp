@@ -25,6 +25,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import io.langya.module.BuildConfig;
 import io.langya.module.R;
 import io.langya.module.contacts.ContactsRepository;
 import io.langya.module.databinding.ActivityMainBinding;
@@ -33,6 +36,7 @@ import io.langya.module.ui.ThemeManager;
 import io.langya.module.ui.dialer.DialerFragment;
 import io.langya.module.ui.history.CallLogFragment;
 import io.langya.module.ui.settings.SettingsActivity;
+import io.langya.module.update.UpdateChecker;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -110,6 +114,21 @@ public class MainActivity extends AppCompatActivity {
 
         handleIntent(getIntent());
         requestCorePermissions();
+
+        UpdateChecker.checkAuto(this, result -> {
+            if (result != null && result.hasUpdate && !isFinishing()) showUpdateDialog(result);
+        });
+    }
+
+    private void showUpdateDialog(UpdateChecker.Result r) {
+        var msg = getString(R.string.update_dialog_msg, BuildConfig.VERSION_NAME, r.latestVersion);
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.update_dialog_title)
+                .setMessage(msg)
+                .setPositiveButton(R.string.update_dialog_open,
+                        (d, w) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(r.htmlUrl))))
+                .setNegativeButton(R.string.update_dialog_later, null)
+                .show();
     }
 
     private void requestCorePermissions() {

@@ -44,6 +44,11 @@
 
     <PreferenceCategory app:title="@string/pref_category_about">
         <Preference
+            app:key="check_update"
+            app:title="@string/pref_check_update"
+            app:summary="@string/pref_check_update_summary" />
+
+        <Preference
             app:key="about"
             app:title="@string/pref_about" />
     </PreferenceCategory>
