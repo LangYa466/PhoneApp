@@ -3,7 +3,7 @@ package io.langya.module.data;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+import timber.log.Timber;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -16,7 +16,6 @@ import java.util.Set;
  */
 public final class CallerIdBatchResolver {
 
-    private static final String TAG = "CallerID_Batch";
 
     public interface Listener {
         /**
@@ -81,7 +80,7 @@ public final class CallerIdBatchResolver {
         }
 
         // 真正发起网络/内置 DB 查询（WebQueryHelper 内部对 BUILTIN/SPECIAL 命中走快路径）
-        Log.d(TAG, "WebQuery: " + j.number);
+        Timber.d("WebQuery: " + j.number);
         new WebQueryHelper().query(j.ctx, j.number, result -> {
             j.listener.onResolved(j.number, result);
             main.post(CallerIdBatchResolver::runNext);

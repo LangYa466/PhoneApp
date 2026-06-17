@@ -2,7 +2,7 @@ package io.langya.module.data;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
+import timber.log.Timber;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -17,7 +17,6 @@ import java.util.Locale;
  */
 public final class CrashLogger {
 
-    private static final String TAG = "CrashLogger";
     private static final String FILE_NAME = "crash.log";
 
     private CrashLogger() {}
@@ -29,11 +28,11 @@ public final class CrashLogger {
             try {
                 writeCrash(appCtx, thread, throwable);
             } catch (Throwable t) {
-                Log.e(TAG, "failed to persist crash", t);
+                Timber.e(t, "failed to persist crash");
             }
             if (previous != null) previous.uncaughtException(thread, throwable);
         });
-        Log.d(TAG, "installed");
+        Timber.d("installed");
     }
 
     private static void writeCrash(Context ctx, Thread thread, Throwable t) {
@@ -55,7 +54,7 @@ public final class CrashLogger {
         try (var fw = new java.io.FileWriter(file, false)) {  // 覆盖：只保留最近一次
             fw.write(sw.toString());
         } catch (Throwable e) {
-            Log.e(TAG, "write failed", e);
+            Timber.e(e, "write failed");
         }
     }
 
@@ -72,7 +71,7 @@ public final class CrashLogger {
             while ((line = r.readLine()) != null) sb.append(line).append('\n');
             return sb.toString();
         } catch (Throwable e) {
-            Log.e(TAG, "read failed", e);
+            Timber.e(e, "read failed");
             return "";
         }
     }

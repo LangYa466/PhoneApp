@@ -2,7 +2,7 @@ package io.langya.module.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
+import timber.log.Timber;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,7 +11,6 @@ public final class CacheStore {
 
     private static final int MAX = 500;
     private static final String PREF = "num_cache";
-    private static final String TAG = "CallerID_Cache";
     private static final String KEY_PREFIX = "num_";
 
     private static final Map<String, String> MEM = new LinkedHashMap<>(16, 0.75f, true) {
@@ -34,13 +33,13 @@ public final class CacheStore {
     public static synchronized String get(String number) {
         var hit = MEM.get(number);
         if (hit != null) {
-            Log.d(TAG, "MEM hit: " + number + " -> " + hit);
+            Timber.d("MEM hit: " + number + " -> " + hit);
             return hit;
         }
         if (sp == null || !sp.contains(KEY_PREFIX + number)) return null;
         var v = sp.getString(KEY_PREFIX + number, null);
         if (v != null) MEM.put(number, v);
-        Log.d(TAG, "DISK hit: " + number + " -> " + v);
+        Timber.d("DISK hit: " + number + " -> " + v);
         return v;
     }
 
@@ -49,7 +48,7 @@ public final class CacheStore {
         MEM.put(number, result);
         if (sp != null) {
             sp.edit().putString(KEY_PREFIX + number, result).apply();
-            Log.d(TAG, "CACHE put: " + number + " -> " + result);
+            Timber.d("CACHE put: " + number + " -> " + result);
         }
     }
 
@@ -65,18 +64,18 @@ public final class CacheStore {
             }
         }
         editor.apply();
-        Log.d(TAG, "clearEmpty: removed " + count + " entries");
+        Timber.d("clearEmpty: removed " + count + " entries");
     }
 
     public static synchronized void remove(String number) {
         MEM.remove(number);
         if (sp != null) sp.edit().remove(KEY_PREFIX + number).apply();
-        Log.d(TAG, "removed: " + number);
+        Timber.d("removed: " + number);
     }
 
     public static synchronized void clearAll() {
         MEM.clear();
         if (sp != null) sp.edit().clear().apply();
-        Log.d(TAG, "clearAll done");
+        Timber.d("clearAll done");
     }
 }

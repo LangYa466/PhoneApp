@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.telecom.Call;
 import android.telecom.CallAudioState;
 import android.telecom.InCallService;
-import android.util.Log;
+import timber.log.Timber;
 
 import io.langya.module.call.CallManager;
 import io.langya.module.ui.InCallActivity;
@@ -15,12 +15,11 @@ import io.langya.module.ui.InCallActivity;
  */
 public class PhoneCallService extends InCallService {
 
-    private static final String TAG = "PhoneCallService";
 
     @Override
     public void onCallAdded(Call call) {
         super.onCallAdded(call);
-        Log.d(TAG, "onCallAdded " + call);
+        Timber.d("onCallAdded " + call);
         CallManager.get().attach(this);
         CallManager.get().addCall(call);
 
@@ -32,7 +31,7 @@ public class PhoneCallService extends InCallService {
     @Override
     public void onCallRemoved(Call call) {
         super.onCallRemoved(call);
-        Log.d(TAG, "onCallRemoved " + call);
+        Timber.d("onCallRemoved " + call);
         CallManager.get().removeCall(call);
         if (CallManager.get().getCalls().isEmpty()) {
             CallManager.get().detach();

@@ -5,7 +5,7 @@ import android.os.Looper;
 import android.telecom.Call;
 import android.telecom.CallAudioState;
 import android.telecom.InCallService;
-import android.util.Log;
+import timber.log.Timber;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +16,6 @@ import java.util.List;
  */
 public final class CallManager {
 
-    private static final String TAG = "CallManager";
     private static final CallManager INSTANCE = new CallManager();
     public static CallManager get() { return INSTANCE; }
 
@@ -48,7 +47,7 @@ public final class CallManager {
         calls.add(call);
         // 指定主线程 Handler，避免 Call 回调跑在 binder 线程上 (#15)
         call.registerCallback(callCallback, mainHandler);
-        Log.d(TAG, "addCall " + call + " state=" + call.getDetails().getState());
+        Timber.d("addCall " + call + " state=" + call.getDetails().getState());
         for (var l : new ArrayList<>(listeners)) l.onCallAdded(call);
     }
 

@@ -5,8 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.telephony.PhoneNumberUtils;
-import android.util.Log;
+import timber.log.Timber;
 
 import androidx.core.content.ContextCompat;
 
@@ -25,7 +24,6 @@ import java.util.Map;
  */
 public final class ContactsRepository {
 
-    private static final String TAG = "CallerID_Contacts";
     private static final int CHINA_MOBILE_LEN = 11;
 
     private static volatile Map<String, String> phoneIndex = null;
@@ -37,7 +35,7 @@ public final class ContactsRepository {
         if (number == null || number.isEmpty()) return null;
         if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
-            Log.w(TAG, "READ_CONTACTS not granted, skip: " + number);
+            Timber.w("READ_CONTACTS not granted, skip: " + number);
             return null;
         }
 
@@ -47,24 +45,24 @@ public final class ContactsRepository {
 
         // 2) Fallback：自建索引 + 多种归一化 key 命中
         var idx = ensureIndex(ctx);
-        var normalized = PhoneNumberUtils.normalizeNumber(number);
-        if (normalized == null || normalized.isEmpty()) return null;
+        var normalized = PhoneNormalizer.normalize(number);
+        if (normalized.isEmpty()) return null;
 
         name = idx.get(normalized);
         if (name != null) {
-            Log.d(TAG, "fallback hit (full): " + number + " -> " + name);
+            Timber.d("fallback hit (full): " + number + " -> " + name);
             return name;
         }
         if (normalized.length() > CHINA_MOBILE_LEN) {
             var tail = normalized.substring(normalized.length() - CHINA_MOBILE_LEN);
             name = idx.get(tail);
             if (name != null) {
-                Log.d(TAG, "fallback hit (last-11): " + number + " -> " + name);
+                Timber.d("fallback hit (last-11): " + number + " -> " + name);
                 return name;
             }
         }
 
-        Log.d(TAG, "no match for: " + number + " (index size=" + idx.size() + ")");
+        Timber.d("no match for: " + number + " (index size=" + idx.size() + ")");
         return null;
     }
 
@@ -82,11 +80,11 @@ public final class ContactsRepository {
                 null, null, null)) {
             if (c != null && c.moveToFirst()) {
                 var name = c.getString(0);
-                Log.d(TAG, "PhoneLookup hit: " + number + " -> " + name);
+                Timber.d("PhoneLookup hit: " + number + " -> " + name);
                 return name;
             }
         } catch (Throwable t) {
-            Log.w(TAG, "PhoneLookup failed for " + number, t);
+            Timber.w(t, "PhoneLookup failed for %s", number);
         }
         return null;
     }
@@ -111,7 +109,7 @@ public final class ContactsRepository {
                 },
                 null, null, null)) {
             if (c == null) {
-                Log.w(TAG, "Phone provider returned null cursor");
+                Timber.w("Phone provider returned null cursor");
                 return map;
             }
             int numIdx = c.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER);
@@ -120,8 +118,8 @@ public final class ContactsRepository {
                 var num = c.getString(numIdx);
                 var name = c.getString(nameIdx);
                 if (num == null || num.isEmpty() || name == null) continue;
-                var normalized = PhoneNumberUtils.normalizeNumber(num);
-                if (normalized == null || normalized.isEmpty()) continue;
+                var normalized = PhoneNormalizer.normalize(num);
+                if (normalized.isEmpty()) continue;
                 map.putIfAbsent(normalized, name);
                 if (normalized.length() > CHINA_MOBILE_LEN) {
                     map.putIfAbsent(
@@ -130,9 +128,9 @@ public final class ContactsRepository {
                 }
             }
         } catch (Throwable t) {
-            Log.w(TAG, "buildIndex failed", t);
+            Timber.w(t, "buildIndex failed");
         }
-        Log.d(TAG, "Phone index built, keys=" + map.size());
+        Timber.d("Phone index built, keys=" + map.size());
         return map;
     }
 

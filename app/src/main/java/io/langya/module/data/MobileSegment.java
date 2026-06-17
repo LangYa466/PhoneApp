@@ -47,25 +47,25 @@ public final class MobileSegment {
         }
     }
 
-    /** 是否合法 11 位手机号（首位必须为 1，其余必须为数字）。 */
+    /**
+     * 是否合法中国大陆手机号。基于 libphonenumber 类型判定；快速失败：长度 ≠ 11
+     * 且无国家码前缀的串直接 false 不进 libphonenumber 解析。
+     */
     public static boolean isChinaMobile(String number) {
-        if (number == null || number.length() != 11) return false;
-        if (number.charAt(0) != '1') return false;
-        for (int i = 1; i < 11; i++) {
-            char c = number.charAt(i);
-            if (c < '0' || c > '9') return false;
-        }
-        return true;
+        if (number == null || number.isEmpty()) return false;
+        return PhoneNormalizer.isChinaMobile(number);
     }
 
     /**
      * 仅返回运营商名称（基于前缀，无网络）。非手机号返回 null。
      */
     public static String carrierOf(String number) {
-        if (!isChinaMobile(number)) return null;
-        var p4 = number.substring(0, 4);
+        if (number == null || number.isEmpty()) return null;
+        var national = PhoneNormalizer.national(number);
+        if (national.length() != 11 || national.charAt(0) != '1') return null;
+        var p4 = national.substring(0, 4);
         var hit = P4.get(p4);
         if (hit != null) return hit;
-        return P3.get(number.substring(0, 3));
+        return P3.get(national.substring(0, 3));
     }
 }

@@ -30,7 +30,6 @@
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon="@drawable/ic_close"
             app:iconTint="#E6E1E5" />
     </LinearLayout>
 
@@ -52,13 +51,13 @@
             android:layout_height="40dp"
             android:background="@drawable/bg_more_icon_circle">
 
-            <ImageView
+            <com.mikepenz.iconics.view.IconicsImageView
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_gravity="center"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_add_call"
-                app:tint="#E6E1E5" />
+                app:iiv_color="#E6E1E5"
+                app:iiv_icon="gmd-add_call" />
         </FrameLayout>
 
         <TextView
@@ -88,14 +87,14 @@
             android:layout_height="40dp"
             android:background="@drawable/bg_more_icon_circle">
 
-            <ImageView
+            <com.mikepenz.iconics.view.IconicsImageView
                 android:id="@+id/iconHold"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_gravity="center"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_pause"
-                app:tint="#E6E1E5" />
+                app:iiv_color="#E6E1E5"
+                app:iiv_icon="gmd-pause" />
         </FrameLayout>
 
         <TextView

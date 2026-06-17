@@ -6,7 +6,7 @@ import static io.langya.module.data.WebQuery.SPECIAL_NUMBERS;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+import timber.log.Timber;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,7 +31,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public final class WebQueryHelper {
 
-    private static final String TAG = "CallerID_Query";
 
     private static final ExecutorService IO = Executors.newSingleThreadExecutor(new ThreadFactory() {
         private final AtomicInteger seq = new AtomicInteger();
@@ -54,7 +53,7 @@ public final class WebQueryHelper {
      * 串行去重在更上层（{@link CallerIdBatchResolver}）做。
      */
     public void query(Context ctx, String number, Callback cb) {
-        Log.d(TAG, "query: " + number);
+        Timber.d("query: " + number);
         if (number == null || number.isEmpty()) {
             MAIN.post(() -> cb.onResult(null));
             return;
@@ -63,7 +62,7 @@ public final class WebQueryHelper {
         // —— 同步快路径 ——
         var quick = quickHit(number);
         if (quick != null) {
-            Log.d(TAG, "FAST hit: " + number + " -> " + quick.value);
+            Timber.d("FAST hit: " + number + " -> " + quick.value);
             final String value = quick.value;
             MAIN.post(() -> cb.onResult(value.isEmpty() ? null : value));
             return;
@@ -73,7 +72,7 @@ public final class WebQueryHelper {
         CacheStore.init(ctx);
         var cached = CacheStore.get(number);
         if (cached != null) {
-            Log.d(TAG, "CACHE hit: " + number + " -> "
+            Timber.d("CACHE hit: " + number + " -> "
                     + (cached.isEmpty() ? "(negative)" : cached));
             final String value = cached;
             MAIN.post(() -> cb.onResult(value.isEmpty() ? null : value));
@@ -86,12 +85,12 @@ public final class WebQueryHelper {
             try {
                 result = resolveRemote(number);
             } catch (Throwable e) {
-                Log.e(TAG, "resolveRemote crashed for " + number, e);
+                Timber.e(e, "resolveRemote crashed for %s", number);
             }
             final String value = result;
             // 负缓存：未识别同样写入 ""，避免反复发起请求
             CacheStore.put(number, value == null ? "" : value);
-            Log.d(TAG, "REMOTE result " + number + " -> " + value);
+            Timber.d("REMOTE result " + number + " -> " + value);
             MAIN.post(() -> cb.onResult(value));
         });
     }

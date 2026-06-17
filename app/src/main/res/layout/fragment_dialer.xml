@@ -99,6 +99,5 @@
         android:layout_margin="16dp"
         android:text="@string/dialer_call"
         app:cornerRadius="28dp"
-        app:icon="@drawable/ic_call"
         app:iconGravity="textStart" />
 </LinearLayout>
