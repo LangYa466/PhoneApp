@@ -135,6 +135,33 @@ public class SettingsActivity extends AppCompatActivity {
             });
         }
 
+        /**
+         * 拦截 ListPreference 的默认 AppCompat AlertDialog (radio button 是老样式)
+         * 自己用 MaterialAlertDialogBuilder 弹一个 MD3 单选列表 onPreferenceChange
+         * 走 bindList() 里挂的 listener 跟原行为完全一致
+         */
+        @Override
+        public void onDisplayPreferenceDialog(@androidx.annotation.NonNull Preference preference) {
+            if (preference instanceof ListPreference lp) {
+                var entries = lp.getEntries();
+                var values = lp.getEntryValues();
+                int checked = lp.findIndexOfValue(lp.getValue());
+                final int[] picked = {checked};
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(lp.getTitle())
+                        .setSingleChoiceItems(entries, checked, (d, which) -> picked[0] = which)
+                        .setPositiveButton(android.R.string.ok, (d, w) -> {
+                            if (picked[0] < 0 || picked[0] >= values.length) return;
+                            var newVal = values[picked[0]].toString();
+                            if (lp.callChangeListener(newVal)) lp.setValue(newVal);
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show();
+                return;
+            }
+            super.onDisplayPreferenceDialog(preference);
+        }
+
         private void bindAction(String key, Runnable action) {
             var pref = findPreference(key);
             if (pref == null) return;

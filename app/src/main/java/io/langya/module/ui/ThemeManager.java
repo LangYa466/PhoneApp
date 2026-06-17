@@ -2,13 +2,13 @@ package io.langya.module.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
+import android.graphics.Color;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
-import io.langya.module.R;
 import com.google.android.material.color.DynamicColors;
+import com.google.android.material.color.DynamicColorsOptions;
 
 public final class ThemeManager {
 
@@ -28,7 +28,14 @@ public final class ThemeManager {
         AppCompatDelegate.setDefaultNightMode(target);
     }
 
-    /** Call before setContentView in every Activity. */
+    /**
+     * 在每个 Activity 的 onCreate super 之前调用
+     *
+     * 用 DynamicColorsOptions 的 contentBasedSource 让 Material 根据种子色生成
+     * 完整 M3 tonal palette (primary / secondary / tertiary / surface / outline ...
+     * 30+ slot 全部派生) 之前手写 6 个 attr 的 overlay 只覆盖了一小部分槽位
+     * 没覆盖的全部走 Material baseline 紫色 这就是切了主题色但 UI 还在紫的根因
+     */
     public static void applyColor(Activity activity) {
         var sp = PreferenceManager.getDefaultSharedPreferences(activity);
         var color = sp.getString(KEY_COLOR, "dynamic");
@@ -41,14 +48,21 @@ public final class ThemeManager {
             color = "blue";
         }
 
-        int overlay = switch (color) {
-            case "green"  -> R.style.ThemeOverlay_CallerID_Green;
-            case "purple" -> R.style.ThemeOverlay_CallerID_Purple;
-            case "red"    -> R.style.ThemeOverlay_CallerID_Red;
-            case "orange" -> R.style.ThemeOverlay_CallerID_Orange;
-            case "teal"   -> R.style.ThemeOverlay_CallerID_Teal;
-            default       -> R.style.ThemeOverlay_CallerID_Blue;
+        int seed = seedOf(color);
+        var opts = new DynamicColorsOptions.Builder()
+                .setContentBasedSource(seed)
+                .build();
+        DynamicColors.applyToActivityIfAvailable(activity, opts);
+    }
+
+    private static int seedOf(String name) {
+        return switch (name == null ? "" : name) {
+            case "green"  -> Color.parseColor("#2E7D32");
+            case "purple" -> Color.parseColor("#6750A4");
+            case "red"    -> Color.parseColor("#C5221F");
+            case "orange" -> Color.parseColor("#E8710A");
+            case "teal"   -> Color.parseColor("#00838F");
+            default       -> Color.parseColor("#1A73E8");
         };
-        activity.getTheme().applyStyle(overlay, true);
     }
 }
