@@ -205,12 +205,35 @@ public final class WebQueryHelper {
             if (done[0]) return;
             done[0] = true;
             Log.d(TAG, "CARD_RAW=" + val);
-            var result = parseCard(val, number);
+            String result;
+            try {
+                result = parseCard(val, number);
+            } catch (Throwable e) {
+                Log.e(TAG, "parseCard crashed, number=" + number, e);
+                result = null;
+            }
             Log.d(TAG, "PARSED=" + result);
             CacheStore.put(number, result != null ? result : "");
             cb.onResult(result);
             cleanup(wm, wv, attached);
         });
+    }
+
+    private static String safeSub(String s, int begin, int end) {
+        if (s == null) return "";
+        int len = s.length();
+        if (begin < 0) begin = 0;
+        if (end > len) end = len;
+        if (begin > end) begin = end;
+        return s.substring(begin, end);
+    }
+
+    private static String safeSub(String s, int begin) {
+        if (s == null) return "";
+        int len = s.length();
+        if (begin < 0) begin = 0;
+        if (begin > len) begin = len;
+        return s.substring(begin);
     }
 
     private void cleanup(WindowManager wm, WebView wv, boolean[] attached) {
@@ -239,14 +262,16 @@ public final class WebQueryHelper {
 
     private String parseCard(String jsVal, String number) {
         if (jsVal == null || jsVal.isEmpty()) return null;
+        if (number == null || number.isEmpty()) return null;
         var t = jsVal.replace("\\n", "\n").replace("\\t", " ")
                 .replace("\\\"", "").replace("\"", "").trim();
         if (t.contains("NO_BODY") || t.length() < 5) return null;
 
         int headerEnd = t.indexOf(HEADER_MARKER);
-        if (headerEnd >= 0) t = t.substring(headerEnd + HEADER_MARKER.length());
+        if (headerEnd >= 0) t = safeSub(t, headerEnd + HEADER_MARKER.length());
         int stopPos = t.indexOf("更多服务");
-        if (stopPos > 0) t = t.substring(0, stopPos);
+        if (stopPos > 0) t = safeSub(t, 0, stopPos);
+        if (t.isEmpty()) return null;
 
         boolean isEnterprise = t.contains("网络收录号码") || t.contains("官方号码")
                 || t.contains("网络收录数据") || t.contains("百度认证号码");
@@ -294,15 +319,16 @@ public final class WebQueryHelper {
 
     @NonNull
     private static String getCard(String number, String t, boolean isEnterprise) {
+        if (t == null || t.isEmpty() || number == null || number.isEmpty()) return "";
         int numPos = t.indexOf(number);
         String card;
         if (isEnterprise) {
-            var before = numPos >= 0 ? t.substring(0, numPos) : t;
-            var after = numPos >= 0 ? t.substring(numPos + number.length()) : "";
-            if (after.length() > 50) after = after.substring(0, 50);
+            var before = numPos >= 0 ? safeSub(t, 0, numPos) : t;
+            var after = numPos >= 0 ? safeSub(t, numPos + number.length()) : "";
+            if (after.length() > 50) after = safeSub(after, 0, 50);
             card = (before.trim() + " " + after.trim()).trim();
         } else {
-            card = numPos >= 0 ? t.substring(numPos + number.length()) : t;
+            card = numPos >= 0 ? safeSub(t, numPos + number.length()) : t;
         }
         return card.replaceAll("\\s+", " ").trim();
     }
