@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    In-call「更多」面板里的 Add call / Hold 等大行
+    填充 colorSurfaceContainerHigh, 圆角 28dp, 带 ripple
+-->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?attr/colorOnSurface">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="?attr/colorSurfaceContainerHigh" />
+            <corners android:radius="28dp" />
+        </shape>
+    </item>
+</ripple>

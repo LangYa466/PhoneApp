@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    通话记录日期分组 header (Today / Yesterday / Earlier)
+    MD3 list subheader 规格: LabelLarge, 颜色 colorPrimary
+-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tvHeader"
+    style="@style/TextAppearance.Material3.LabelLarge"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="8dp"
+    android:textColor="?attr/colorPrimary" />

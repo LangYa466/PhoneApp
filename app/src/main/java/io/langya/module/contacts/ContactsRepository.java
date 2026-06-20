@@ -1,16 +1,15 @@
 package io.langya.module.contacts;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import timber.log.Timber;
-
 import androidx.core.content.ContextCompat;
-
-import java.util.HashMap;
-import java.util.Map;
+import timber.log.Timber;
 
 import io.langya.module.callerid.PhoneNumbers;
 
@@ -70,6 +69,64 @@ public final class ContactsRepository {
     /** 权限变化、或用户在系统通讯录新增/修改联系人后调用 下次 lookup 时重建 */
     public static void invalidate() {
         synchronized (indexLock) { phoneIndex = null; }
+    }
+
+    /**
+     * 拼出可被 ACTION_VIEW 直接打开的联系人 URI
+     * PhoneLookup CONTENT_FILTER_URI 本身只是查询入口 不能 ACTION_VIEW 打开
+     * 必须先 query 拿到 _ID + LOOKUP_KEY 再用 Contacts.getLookupUri()
+     */
+    public static Uri lookupContactUri(Context ctx, String number) {
+        if (number == null || number.isEmpty()) return null;
+        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) return null;
+        var uri = Uri.withAppendedPath(
+                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(number));
+        try (var c = ctx.getContentResolver().query(uri,
+                new String[]{
+                        ContactsContract.PhoneLookup._ID,
+                        ContactsContract.PhoneLookup.LOOKUP_KEY
+                },
+                null, null, null)) {
+            if (c != null && c.moveToFirst()) {
+                long id = c.getLong(0);
+                String key = c.getString(1);
+                if (key != null) return ContactsContract.Contacts.getLookupUri(id, key);
+            }
+        } catch (Throwable t) {
+            Timber.w(t, "PhoneLookup lookupUri failed for %s", number);
+        }
+        return null;
+    }
+
+    /**
+     * 查联系人头像 URI (thumbnail 优先, 没缩略图回退到 full size)
+     * 返回的 URI 可用 ContentResolver.openInputStream 直接读
+     */
+    public static String lookupPhotoUri(Context ctx, String number) {
+        if (number == null || number.isEmpty()) return null;
+        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) return null;
+        var uri = Uri.withAppendedPath(
+                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(number));
+        try (var c = ctx.getContentResolver().query(uri,
+                new String[]{
+                        ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI,
+                        ContactsContract.PhoneLookup.PHOTO_URI
+                },
+                null, null, null)) {
+            if (c != null && c.moveToFirst()) {
+                var thumb = c.getString(0);
+                if (thumb != null && !thumb.isEmpty()) return thumb;
+                var full = c.getString(1);
+                if (full != null && !full.isEmpty()) return full;
+            }
+        } catch (Throwable t) {
+            Timber.w(t, "PhoneLookup photo failed for %s", number);
+        }
+        return null;
     }
 
     private static String phoneLookup(Context ctx, String number) {

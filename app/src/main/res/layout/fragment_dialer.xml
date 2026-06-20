@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Dialer 整体布局
+    顶部 ScrollView (weight=1) 滚 - 联系人匹配 + 建议 / 操作行
+    底部固定拨号区 - 号码显示行 + 拨号键盘 + 呼叫按钮 Y 不变
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,32 +11,169 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- 顶部输入区 -->
+    <!-- 顶部可滚动内容 联系人匹配 + 操作行 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="12dp">
+
+            <!-- 联系人命中区 -->
+            <TextView
+                android:id="@+id/tvMatchHeaderContacts"
+                style="@style/TextAppearance.Material3.LabelLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="4dp"
+                android:text="@string/dialer_match_contacts_header"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/matchedContacts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" />
+
+            <!-- 通话记录 / 非联系人命中区 -->
+            <TextView
+                android:id="@+id/tvMatchHeaderOthers"
+                style="@style/TextAppearance.Material3.LabelLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="4dp"
+                android:text="@string/dialer_match_others_header"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/matchedOthers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" />
+
+            <!-- 三个操作行 仅在已输入号码时显示 -->
+            <LinearLayout
+                android:id="@+id/suggestions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="12dp"
+                android:paddingTop="4dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/suggestCreate"
+                    style="@style/Widget.CallerID.SuggestRow">
+
+                    <com.mikepenz.iconics.view.IconicsImageView
+                        android:id="@+id/suggestCreateIcon"
+                        style="@style/Widget.CallerID.SuggestIcon"
+                        app:iiv_icon="mso-person_add" />
+
+                    <TextView
+                        style="@style/TextAppearance.Material3.BodyLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:text="@string/dialer_suggest_create"
+                        android:textColor="?attr/colorOnSurface" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/suggestAdd"
+                    style="@style/Widget.CallerID.SuggestRow">
+
+                    <com.mikepenz.iconics.view.IconicsImageView
+                        android:id="@+id/suggestAddIcon"
+                        style="@style/Widget.CallerID.SuggestIcon"
+                        app:iiv_icon="mso-group_add" />
+
+                    <TextView
+                        style="@style/TextAppearance.Material3.BodyLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:text="@string/dialer_suggest_add"
+                        android:textColor="?attr/colorOnSurface" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/suggestMessage"
+                    style="@style/Widget.CallerID.SuggestRow">
+
+                    <com.mikepenz.iconics.view.IconicsImageView
+                        android:id="@+id/suggestMessageIcon"
+                        style="@style/Widget.CallerID.SuggestIcon"
+                        app:iiv_icon="mso-chat_bubble" />
+
+                    <TextView
+                        style="@style/TextAppearance.Material3.BodyLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:text="@string/dialer_suggest_message"
+                        android:textColor="?attr/colorOnSurface" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 底部固定拨号区 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp">
+        android:background="@drawable/bg_dialpad_block"
+        android:orientation="vertical"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="12dp">
 
+        <!-- 号码显示行 overflow / display / backspace -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOverflow"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                app:iconSize="22dp" />
 
             <EditText
                 android:id="@+id/tvDisplay"
                 style="@style/TextAppearance.Material3.HeadlineMedium"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@null"
                 android:cursorVisible="true"
                 android:ellipsize="start"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
+                android:gravity="center"
                 android:hint="@string/dialer_hint"
                 android:inputType="phone"
                 android:longClickable="true"
@@ -42,98 +184,34 @@
                 android:textCursorDrawable="@null"
                 tools:ignore="LabelFor" />
 
-            <TextView
-                android:id="@+id/tvCallerId"
-                style="@style/TextAppearance.Material3.BodySmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="?attr/colorPrimary" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBackspace"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                app:iconSize="22dp" />
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBackspace"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        <!-- 联系人/识别结果副标题 隐藏占位 -->
+        <TextView
+            android:id="@+id/tvCallerId"
+            style="@style/TextAppearance.Material3.BodySmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingHorizontal="8dp"
+            android:textColor="?attr/colorPrimary"
+            android:visibility="gone" />
 
-    <!-- 建议条：仅在已输入号码时显示 -->
-    <LinearLayout
-        android:id="@+id/suggestions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="12dp"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:id="@+id/suggestCreate"
-            style="@style/Widget.CallerID.SuggestRow">
-
-            <com.mikepenz.iconics.view.IconicsImageView
-                android:id="@+id/suggestCreateIcon"
-                style="@style/Widget.CallerID.SuggestIcon"
-                app:iiv_icon="mso-person_add" />
-
-            <TextView
-                style="@style/TextAppearance.Material3.BodyLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="@string/dialer_suggest_create"
-                android:textColor="?attr/colorOnSurface" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/suggestAdd"
-            style="@style/Widget.CallerID.SuggestRow">
-
-            <com.mikepenz.iconics.view.IconicsImageView
-                android:id="@+id/suggestAddIcon"
-                style="@style/Widget.CallerID.SuggestIcon"
-                app:iiv_icon="mso-group_add" />
-
-            <TextView
-                style="@style/TextAppearance.Material3.BodyLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="@string/dialer_suggest_add"
-                android:textColor="?attr/colorOnSurface" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/suggestMessage"
-            style="@style/Widget.CallerID.SuggestRow">
-
-            <com.mikepenz.iconics.view.IconicsImageView
-                android:id="@+id/suggestMessageIcon"
-                style="@style/Widget.CallerID.SuggestIcon"
-                app:iiv_icon="mso-chat_bubble" />
-
-            <TextView
-                style="@style/TextAppearance.Material3.BodyLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="@string/dialer_suggest_message"
-                android:textColor="?attr/colorOnSurface" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- 拨号键盘容器：占据中部剩余空间 键盘居中 -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
+        <!-- 拨号键盘 3x4 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="2dp"
             android:orientation="vertical">
 
             <LinearLayout style="@style/DialerRow">
@@ -157,13 +235,13 @@
                 <include layout="@layout/dial_button" android:id="@+id/keyHash" />
             </LinearLayout>
         </LinearLayout>
-    </FrameLayout>
 
-    <!-- 呼叫按钮 圆角绿药丸 居中 -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnCall"
-        style="@style/Widget.CallerID.CallPill"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginVertical="16dp"
-        android:text="@string/dialer_call" />
+        <!-- 呼叫按钮 绿药丸 居中 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCall"
+            style="@style/Widget.CallerID.CallPill"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:text="@string/dialer_call" />
+    </LinearLayout>
 </LinearLayout>

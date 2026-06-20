@@ -27,6 +27,8 @@
     <string name="dialer_suggest_create">建立新联系人</string>
     <string name="dialer_suggest_add">添加至联系人</string>
     <string name="dialer_suggest_message">发送短信</string>
+    <string name="dialer_match_contacts_header">通讯录</string>
+    <string name="dialer_match_others_header">非联系人</string>
     <string name="toast_no_app_to_handle">没有可处理的应用</string>
 
     <!-- Call log -->
@@ -42,6 +44,15 @@
     <string name="calllog_unknown">未知</string>
     <string name="calllog_duration_min_sec">%1$d分%2$d秒</string>
     <string name="calllog_duration_sec">%1$d秒</string>
+    <string name="calllog_header_today">今天</string>
+    <string name="calllog_header_yesterday">昨天</string>
+    <string name="calllog_header_earlier">更早</string>
+    <string name="calllog_filter_all">全部</string>
+    <string name="calllog_filter_missed">未接</string>
+    <string name="calllog_filter_incoming">来电</string>
+    <string name="calllog_filter_outgoing">已拨</string>
+    <string name="calllog_expand_message">短信</string>
+    <string name="calllog_expand_contact">联系人</string>
 
     <!-- In-call -->
     <string name="incall_state_ringing">来电</string>

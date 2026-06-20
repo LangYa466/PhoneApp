@@ -1,21 +1,41 @@
 package io.langya.module.ui.dialer;
 
+import static com.google.android.material.R.attr.colorOnPrimaryContainer;
+import static com.google.android.material.R.attr.colorOnSecondaryContainer;
+import static com.google.android.material.R.attr.colorOnTertiaryContainer;
+import static com.google.android.material.R.attr.colorPrimaryContainer;
+import static com.google.android.material.R.attr.colorSecondaryContainer;
+import static com.google.android.material.R.attr.colorTertiaryContainer;
+
+import java.util.HashSet;
+import java.util.List;
+
 import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telecom.TelecomManager;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.format.DateUtils;
+import android.text.style.StyleSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -23,16 +43,23 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.i18n.phonenumbers.AsYouTypeFormatter;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
 import io.langya.module.R;
 import io.langya.module.callerid.CallerIdResolver;
+import io.langya.module.callerid.PhoneNumbers;
+import io.langya.module.contacts.DialerMatchRepository;
 import io.langya.module.databinding.DialButtonBinding;
 import io.langya.module.databinding.FragmentDialerBinding;
+import io.langya.module.ui.ContactAvatars;
 import io.langya.module.ui.Md3Icons;
 
 public class DialerFragment extends Fragment {
+
+    private static final int AVATAR_DP = 40;
+    private static final int CALLER_ID_LOOKUP_MIN_DIGITS = 3;
 
     private FragmentDialerBinding b;
     /** 原始输入 (digits / + / * / #); EditText 显示的是 formatForDisplay 后的字符串 */
@@ -88,6 +115,7 @@ public class DialerFragment extends Fragment {
             return true;
         });
         b.btnBackspace.setIcon(Md3Icons.of(requireContext(), "mso-backspace"));
+        b.btnOverflow.setIcon(Md3Icons.of(requireContext(), "mso-more_vert"));
         b.btnCall.setIcon(Md3Icons.of(requireContext(), "mso-call"));
         b.btnCall.setOnClickListener(v -> attemptPlaceCall());
 
@@ -165,28 +193,201 @@ public class DialerFragment extends Fragment {
                 updatingDisplay = false;
             }
         }
-        b.tvCallerId.setText("");
-        b.suggestions.setVisibility(raw.isEmpty() ? View.GONE : View.VISIBLE);
 
-        var contactName = CallerIdResolver.contactNameOf(requireContext(), raw);
-        if (contactName != null) {
-            b.tvCallerId.setText(contactName);
-            lastLookupNumber = raw;
+        boolean hasInput = !raw.isEmpty();
+        b.suggestions.setVisibility(hasInput ? View.VISIBLE : View.GONE);
+        refreshMatches(raw);
+        refreshCallerId(raw);
+    }
+
+    /** caller id 在新版布局里给空就好 顶部命中区已经显示联系人 这里只在没匹配时显示识别中 */
+    private void refreshCallerId(String raw) {
+        if (raw.length() < CALLER_ID_LOOKUP_MIN_DIGITS) {
+            lastLookupNumber = "";
             return;
         }
+        if (raw.equals(lastLookupNumber)) return;
+        lastLookupNumber = raw;
+        CallerIdResolver.resolve(requireContext(), raw, (displayName, fromContacts) -> {
+            // 不渲染 顶部已经覆盖了通讯录命中 在线识别静默缓存
+        });
+    }
 
-        if (raw.length() >= 3 && !raw.equals(lastLookupNumber)) {
-            lastLookupNumber = raw;
-            b.tvCallerId.setText(R.string.incall_querying);
-            CallerIdResolver.resolve(requireContext(), raw, (displayName, fromContacts) -> {
-                if (!isAdded() || b == null || !raw.equals(buffer.toString())) return;
-                requireActivity().runOnUiThread(() -> {
-                    if (b == null) return;
-                    if (displayName == null || displayName.isEmpty()) b.tvCallerId.setText("");
-                    else b.tvCallerId.setText(displayName);
-                });
+    private void refreshMatches(String digits) {
+        if (b == null) return;
+        b.matchedContacts.removeAllViews();
+        b.matchedOthers.removeAllViews();
+        if (digits.isEmpty()) {
+            b.tvMatchHeaderContacts.setVisibility(View.GONE);
+            b.matchedContacts.setVisibility(View.GONE);
+            b.tvMatchHeaderOthers.setVisibility(View.GONE);
+            b.matchedOthers.setVisibility(View.GONE);
+            return;
+        }
+        var ctx = requireContext();
+        var contacts = DialerMatchRepository.findContacts(ctx, digits);
+        var seenNormalized = new HashSet<String>();
+        for (var m : contacts) seenNormalized.add(PhoneNumbers.normalize(m.number()));
+        var others = DialerMatchRepository.findOthers(ctx, digits, seenNormalized);
+
+        renderContactMatches(ctx, digits, contacts);
+        renderOtherMatches(ctx, digits, others);
+    }
+
+    private void renderContactMatches(Context ctx, String digits, List<DialerMatchRepository.ContactMatch> list) {
+        if (list.isEmpty()) {
+            b.tvMatchHeaderContacts.setVisibility(View.GONE);
+            b.matchedContacts.setVisibility(View.GONE);
+            return;
+        }
+        b.tvMatchHeaderContacts.setVisibility(View.VISIBLE);
+        b.matchedContacts.setVisibility(View.VISIBLE);
+        var inflater = LayoutInflater.from(ctx);
+        for (var m : list) {
+            var row = inflater.inflate(R.layout.item_dialer_match, b.matchedContacts, false);
+            bindMatchRow(ctx, row, m.name() != null ? m.name() : m.number(),
+                    buildContactSub(m.label(), m.number(), digits),
+                    m.number(), m.photoUri());
+            b.matchedContacts.addView(row);
+        }
+    }
+
+    private void renderOtherMatches(Context ctx, String digits, List<DialerMatchRepository.OtherMatch> list) {
+        if (list.isEmpty()) {
+            b.tvMatchHeaderOthers.setVisibility(View.GONE);
+            b.matchedOthers.setVisibility(View.GONE);
+            return;
+        }
+        b.tvMatchHeaderOthers.setVisibility(View.VISIBLE);
+        b.matchedOthers.setVisibility(View.VISIBLE);
+        var inflater = LayoutInflater.from(ctx);
+        for (var m : list) {
+            var row = inflater.inflate(R.layout.item_dialer_match, b.matchedOthers, false);
+            var when = DateUtils.getRelativeTimeSpanString(m.lastCallDate(),
+                    System.currentTimeMillis(), DateUtils.DAY_IN_MILLIS).toString();
+            bindMatchRow(ctx, row, boldMatched(m.number(), digits), when, m.number(), null);
+            b.matchedOthers.addView(row);
+        }
+    }
+
+    private void bindMatchRow(Context ctx, View row, CharSequence name, CharSequence sub,
+                              String number, String photoUri) {
+        var tvName = (TextView) row.findViewById(R.id.tvName);
+        var tvSub = (TextView) row.findViewById(R.id.tvSub);
+        var avatarBg = row.findViewById(R.id.avatarBg);
+        var tvAvatar = (TextView) row.findViewById(R.id.tvAvatar);
+        var ivAvatar = (ImageView) row.findViewById(R.id.ivAvatar);
+        var btnCall = (MaterialButton) row.findViewById(R.id.btnCallMatch);
+
+        tvName.setText(name);
+        tvSub.setText(sub);
+        tvAvatar.setText(initialOf(name.toString()));
+        applyAvatarPalette(ctx, avatarBg.getBackground(), tvAvatar,
+                photoUri != null ? photoUri : number);
+
+        ContactAvatars.clear(ivAvatar);
+        ivAvatar.setVisibility(View.GONE);
+        avatarBg.setVisibility(View.VISIBLE);
+        tvAvatar.setVisibility(View.VISIBLE);
+        if (photoUri != null) {
+            ContactAvatars.load(ctx, photoUri, ivAvatar, success -> {
+                if (!success) return;
+                ivAvatar.setVisibility(View.VISIBLE);
+                avatarBg.setVisibility(View.GONE);
+                tvAvatar.setVisibility(View.GONE);
             });
         }
+
+        btnCall.setIcon(Md3Icons.of(ctx, "mso-call", 20));
+        btnCall.setOnClickListener(v -> directCall(number));
+        row.setOnClickListener(v -> directCall(number));
+    }
+
+    /** 联系人副标题 把输入的 digits 在号码里加粗 例如 "Mobile 11451**4**" */
+    private CharSequence buildContactSub(String label, String number, String digits) {
+        var prefix = (label == null ? "" : label + " ");
+        var sb = new SpannableStringBuilder(prefix);
+        sb.append(boldMatched(number, digits));
+        return sb;
+    }
+
+    /** 输入数字在号码里命中的位置加粗 数字间允许 -/空格/+/( 等格式字符穿插 */
+    private CharSequence boldMatched(String number, String digits) {
+        var sb = new SpannableStringBuilder(number);
+        if (digits == null || digits.isEmpty()) return sb;
+        int di = 0, start = -1;
+        for (int i = 0; i < number.length() && di < digits.length(); i++) {
+            char c = number.charAt(i);
+            if (c == digits.charAt(di)) {
+                if (start < 0) start = i;
+                di++;
+                if (di == digits.length()) {
+                    sb.setSpan(new StyleSpan(Typeface.BOLD), start, i + 1, 0);
+                    break;
+                }
+            } else if (Character.isDigit(c)) {
+                // 数字不匹配 重头开始扫
+                di = 0; start = -1;
+                if (c == digits.charAt(0)) { di = 1; start = i; }
+            }
+        }
+        return sb;
+    }
+
+    private void directCall(String number) {
+        if (number == null || number.isEmpty()) return;
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+            toast(getString(R.string.toast_need_call_permission));
+            return;
+        }
+        var tm = (TelecomManager) requireContext().getSystemService(Context.TELECOM_SERVICE);
+        if (tm == null) return;
+        try {
+            tm.placeCall(Uri.fromParts("tel", number, null), new Bundle());
+        } catch (SecurityException e) {
+            toast(getString(R.string.toast_need_default_dialer));
+        }
+    }
+
+    private static String initialOf(String s) {
+        if (s == null) return "#";
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (Character.isLetter(c)) return String.valueOf(Character.toUpperCase(c));
+            if (Character.isDigit(c)) return String.valueOf(c);
+        }
+        return "#";
+    }
+
+    /**
+     * 按 hash 在 primary / secondary / tertiary container 三色里轮转
+     * 同号码每次出现颜色一致 不同号码颜色分散
+     * 同一 drawable XML inflate 出的实例共享 ConstantState 必须 mutate() 否则污染其它行
+     */
+    private static void applyAvatarPalette(Context ctx, Drawable bg, TextView label, String seed) {
+        int[][] palette = {
+                {colorPrimaryContainer, colorOnPrimaryContainer},
+                {colorSecondaryContainer, colorOnSecondaryContainer},
+                {colorTertiaryContainer, colorOnTertiaryContainer},
+        };
+        int idx = Math.floorMod(seed == null ? 0 : seed.hashCode(), palette.length);
+        int bgColor = resolveAttr(ctx, palette[idx][0]);
+        int fgColor = resolveAttr(ctx, palette[idx][1]);
+        if (bg instanceof GradientDrawable gd) {
+            gd.mutate();
+            gd.setColor(bgColor);
+        }
+        label.setTextColor(ColorStateList.valueOf(fgColor));
+    }
+
+    private static int resolveAttr(Context ctx, int attr) {
+        var tv = new TypedValue();
+        if (ctx.getTheme().resolveAttribute(attr, tv, true)) {
+            if (tv.resourceId != 0) return ContextCompat.getColor(ctx, tv.resourceId);
+            return tv.data;
+        }
+        return Color.GRAY;
     }
 
     /**

@@ -27,6 +27,8 @@
     <string name="dialer_suggest_create">Create new contact</string>
     <string name="dialer_suggest_add">Add to a contact</string>
     <string name="dialer_suggest_message">Send a message</string>
+    <string name="dialer_match_contacts_header">All contacts</string>
+    <string name="dialer_match_others_header">Not in your contacts</string>
     <string name="toast_no_app_to_handle">No app available to handle this</string>
 
     <!-- Call log -->
@@ -42,6 +44,15 @@
     <string name="calllog_unknown">Unknown</string>
     <string name="calllog_duration_min_sec">%1$dm %2$ds</string>
     <string name="calllog_duration_sec">%1$ds</string>
+    <string name="calllog_header_today">Today</string>
+    <string name="calllog_header_yesterday">Yesterday</string>
+    <string name="calllog_header_earlier">Earlier</string>
+    <string name="calllog_filter_all">All</string>
+    <string name="calllog_filter_missed">Missed</string>
+    <string name="calllog_filter_incoming">Incoming</string>
+    <string name="calllog_filter_outgoing">Outgoing</string>
+    <string name="calllog_expand_message">Message</string>
+    <string name="calllog_expand_contact">Contact</string>
 
     <!-- In-call -->
     <string name="incall_state_ringing">Incoming call</string>

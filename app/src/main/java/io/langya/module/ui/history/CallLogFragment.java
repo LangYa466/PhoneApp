@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -24,9 +23,12 @@ import io.langya.module.callerid.CallerIdBatchQueue;
 import io.langya.module.calllog.CallLogRepository;
 import io.langya.module.databinding.FragmentCallLogBinding;
 
+
 public class CallLogFragment extends Fragment {
 
     private FragmentCallLogBinding b;
+    private CallLogAdapter adapter;
+    private CallLogAdapter.Filter pendingFilter = CallLogAdapter.Filter.ALL;
 
     private final ActivityResultLauncher<String[]> permsLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
@@ -48,6 +50,18 @@ public class CallLogFragment extends Fragment {
                 Manifest.permission.READ_CALL_LOG,
                 Manifest.permission.READ_CONTACTS
         }));
+
+        b.chipGroupFilter.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            if (checkedIds.isEmpty()) return;
+            int id = checkedIds.get(0);
+            CallLogAdapter.Filter f;
+            if (id == R.id.chipMissed) f = CallLogAdapter.Filter.MISSED;
+            else if (id == R.id.chipIncoming) f = CallLogAdapter.Filter.INCOMING;
+            else if (id == R.id.chipOutgoing) f = CallLogAdapter.Filter.OUTGOING;
+            else f = CallLogAdapter.Filter.ALL;
+            pendingFilter = f;
+            if (adapter != null) adapter.setFilter(f);
+        });
     }
 
     @Override
@@ -67,26 +81,28 @@ public class CallLogFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         b = null;
+        adapter = null;
     }
 
     private void reload() {
         var granted = ContextCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
         if (!granted) {
-            b.recycler.setVisibility(View.GONE);
+            b.contentRoot.setVisibility(View.GONE);
             b.emptyState.setVisibility(View.VISIBLE);
             return;
         }
         final var items = CallLogRepository.load(requireContext(), 200);
         if (items.isEmpty()) {
-            b.recycler.setVisibility(View.GONE);
+            b.contentRoot.setVisibility(View.GONE);
             b.emptyState.setVisibility(View.VISIBLE);
             b.btnGrantCallLog.setVisibility(View.GONE);
             return;
         }
         b.emptyState.setVisibility(View.GONE);
-        b.recycler.setVisibility(View.VISIBLE);
-        final var adapter = new CallLogAdapter(items, this::callBack);
+        b.contentRoot.setVisibility(View.VISIBLE);
+        adapter = new CallLogAdapter(items, this::callBack);
+        adapter.setFilter(pendingFilter);
         b.recycler.setAdapter(adapter);
 
         final var appCtx = requireContext().getApplicationContext();
